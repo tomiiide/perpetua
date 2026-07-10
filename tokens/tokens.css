@@ -1,0 +1,136 @@
+/* Perpetua design tokens — single source of truth.
+   Tailwind, MUI, and plain CSS all consume these variables.
+   Naming: --pt-{category}-{name}[-{variant}] */
+
+:root, [data-theme="dark"] {
+  /* ---------- Color: surfaces (elevation ladder, darkest → lightest) ---------- */
+  --pt-surface-0: #0a0b0e;   /* app background */
+  --pt-surface-1: #101218;   /* panel */
+  --pt-surface-2: #171a22;   /* card / row hover */
+  --pt-surface-3: #1f232e;   /* popover / input */
+  --pt-border-subtle: #232733;
+  --pt-border-strong: #323848;
+  --pt-overlay: rgba(6, 7, 10, 0.7);
+
+  /* ---------- Color: text ---------- */
+  --pt-text-primary: #e8eaf0;
+  --pt-text-secondary: #9aa2b5;
+  --pt-text-muted: #5d6578;
+  --pt-text-inverse: #0a0b0e;
+
+  /* ---------- Color: brand ---------- */
+  --pt-accent: #5b8cff;
+  --pt-accent-hover: #7aa2ff;
+  --pt-accent-muted: rgba(91, 140, 255, 0.14);
+
+  /* ---------- Color: trading semantics (the tokens that matter) ---------- */
+  --pt-long: #16c784;            /* buy / up / profit */
+  --pt-long-hover: #1fdd95;
+  --pt-long-muted: rgba(22, 199, 132, 0.12);   /* depth bars, row tints */
+  --pt-short: #ea3943;           /* sell / down / loss */
+  --pt-short-hover: #f25560;
+  --pt-short-muted: rgba(234, 57, 67, 0.12);
+  --pt-flat: #9aa2b5;
+  /* Flash-on-change (FlashCell) */
+  --pt-flash-up: rgba(22, 199, 132, 0.25);
+  --pt-flash-down: rgba(234, 57, 67, 0.25);
+  --pt-flash-duration: 300ms;
+
+  /* ---------- Color: status ---------- */
+  --pt-warn: #f0b90b;
+  --pt-warn-muted: rgba(240, 185, 11, 0.12);
+  --pt-danger: #ea3943;
+  --pt-success: #16c784;
+  --pt-info: #5b8cff;
+  /* Account health thresholds */
+  --pt-health-safe: var(--pt-long);
+  --pt-health-warn: var(--pt-warn);
+  --pt-health-danger: var(--pt-short);
+
+  /* ---------- Typography ---------- */
+  --pt-font-ui: "Inter", "SF Pro", system-ui, sans-serif;
+  --pt-font-num: "IBM Plex Mono", "SF Mono", ui-monospace, monospace; /* all prices/sizes */
+  --pt-text-2xs: 0.6875rem;  /* 11px — book rows, table cells (compact) */
+  --pt-text-xs: 0.75rem;
+  --pt-text-sm: 0.8125rem;   /* default UI size */
+  --pt-text-md: 0.9375rem;
+  --pt-text-lg: 1.125rem;
+  --pt-text-xl: 1.5rem;      /* headline stats */
+  --pt-weight-normal: 450;
+  --pt-weight-medium: 550;
+  --pt-weight-bold: 650;
+  --pt-nums: "tnum" 1, "zero" 1;  /* tabular + slashed zero, apply to all numerics */
+
+  /* ---------- Spacing (4px base) ---------- */
+  --pt-space-0: 0; --pt-space-1: 0.25rem; --pt-space-2: 0.5rem;
+  --pt-space-3: 0.75rem; --pt-space-4: 1rem; --pt-space-5: 1.5rem;
+  --pt-space-6: 2rem; --pt-space-8: 3rem;
+
+  /* ---------- Density axis (remapped by [data-density]) ---------- */
+  --pt-row-h: 1.5rem;         /* book/table row height */
+  --pt-control-h: 2rem;       /* inputs, buttons */
+  --pt-panel-pad: var(--pt-space-3);
+  --pt-cell-pad-x: var(--pt-space-2);
+
+  /* ---------- Shape ---------- */
+  --pt-radius-sm: 4px;
+  --pt-radius-md: 6px;
+  --pt-radius-lg: 10px;
+  --pt-radius-full: 999px;
+
+  /* ---------- Elevation ---------- */
+  --pt-shadow-1: 0 1px 2px rgba(0,0,0,0.4);
+  --pt-shadow-2: 0 4px 16px rgba(0,0,0,0.5);
+  --pt-shadow-3: 0 12px 40px rgba(0,0,0,0.6);
+  --pt-focus-ring: 0 0 0 2px var(--pt-surface-0), 0 0 0 4px var(--pt-accent);
+
+  /* ---------- Motion ---------- */
+  --pt-ease: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --pt-dur-fast: 100ms;   /* hover, press */
+  --pt-dur-med: 180ms;    /* popovers, tabs */
+  --pt-dur-slow: 300ms;   /* dialogs, drawers */
+
+  /* ---------- Z ---------- */
+  --pt-z-sticky: 10; --pt-z-popover: 40; --pt-z-modal: 50; --pt-z-toast: 60;
+}
+
+/* ---------- Light theme: only overrides, same contract ---------- */
+[data-theme="light"] {
+  --pt-surface-0: #f6f7f9;
+  --pt-surface-1: #ffffff;
+  --pt-surface-2: #f0f2f5;
+  --pt-surface-3: #e8ebf0;
+  --pt-border-subtle: #e2e5ec;
+  --pt-border-strong: #c9ceda;
+  --pt-overlay: rgba(20, 24, 34, 0.4);
+  --pt-text-primary: #171a22;
+  --pt-text-secondary: #4d5468;
+  --pt-text-muted: #8a91a5;
+  --pt-text-inverse: #ffffff;
+  --pt-long: #0d9e6c;
+  --pt-short: #d92d38;
+  --pt-shadow-1: 0 1px 2px rgba(23,26,34,0.08);
+  --pt-shadow-2: 0 4px 16px rgba(23,26,34,0.10);
+  --pt-shadow-3: 0 12px 40px rgba(23,26,34,0.14);
+}
+
+/* ---------- Density modes ---------- */
+[data-density="compact"] {
+  --pt-row-h: 1.25rem;
+  --pt-control-h: 1.75rem;
+  --pt-panel-pad: var(--pt-space-2);
+  --pt-text-sm: 0.75rem;
+}
+[data-density="comfortable"] {
+  --pt-row-h: 2rem;
+  --pt-control-h: 2.5rem;
+  --pt-panel-pad: var(--pt-space-4);
+}
+
+/* ---------- Regional convention: red-up/green-down (KR/JP/CN markets) ---------- */
+[data-updown="inverted"] {
+  --pt-long: #ea3943; --pt-long-hover: #f25560; --pt-long-muted: rgba(234,57,67,0.12);
+  --pt-short: #16c784; --pt-short-hover: #1fdd95; --pt-short-muted: rgba(22,199,132,0.12);
+  --pt-flash-up: rgba(234,57,67,0.25);
+  --pt-flash-down: rgba(22,199,132,0.25);
+}

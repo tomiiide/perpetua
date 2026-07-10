@@ -1,0 +1,57 @@
+{
+  "name": "@perpetua/react",
+  "version": "0.0.0",
+  "description": "React bindings: /hooks (thin wrappers over desk actions) and /components (unstyled primitives + connected widgets).",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
+  },
+  "dependencies": {
+    "@perpetua/core": "workspace:*",
+    "@radix-ui/react-accordion": "^1.2.16",
+    "@radix-ui/react-checkbox": "^1.3.7",
+    "@radix-ui/react-context-menu": "^2.3.3",
+    "@radix-ui/react-dialog": "^1.1.19",
+    "@radix-ui/react-dropdown-menu": "^2.1.20",
+    "@radix-ui/react-popover": "^1.1.19",
+    "@radix-ui/react-slider": "^1.4.3",
+    "@radix-ui/react-switch": "^1.3.3",
+    "@radix-ui/react-tabs": "^1.1.17",
+    "@radix-ui/react-toast": "^1.2.19",
+    "@radix-ui/react-tooltip": "^1.2.12",
+    "@radix-ui/react-visually-hidden": "^1.2.7",
+    "@tanstack/react-virtual": "^3.14.5",
+    "clsx": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

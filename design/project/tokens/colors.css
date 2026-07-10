@@ -1,0 +1,77 @@
+/* Perpetua color tokens — dark is the default theme */
+:root {
+  /* Surfaces */
+  --pt-bg-0: #0B0C0E;        /* page */
+  --pt-bg-1: #111316;        /* panel */
+  --pt-bg-2: #17191C;        /* raised / hover */
+  --pt-bg-3: #1E2125;        /* active */
+
+  /* Hairlines */
+  --pt-border: #232528;
+  --pt-border-strong: #2E3136;
+
+  /* Ink */
+  --pt-fg-0: #F0F1F2;        /* primary text, prices */
+  --pt-fg-1: #9CA3AF;        /* secondary */
+  --pt-fg-2: #6B7280;        /* labels, captions */
+  --pt-fg-3: #3F4650;        /* disabled, ghost marks */
+
+  /* Brand accent — electric teal */
+  --pt-accent: #2DD4BF;
+  --pt-accent-strong: #14B8A6;
+  --pt-accent-dim: #134E4A;
+  --pt-accent-ink: #042F2E;              /* text on accent fill */
+  --pt-accent-wash: rgba(45, 212, 191, 0.08);
+
+  /* Market semantics */
+  --pt-long: #34D399;
+  --pt-long-wash: rgba(52, 211, 153, 0.10);
+  --pt-short: #F87171;
+  --pt-short-wash: rgba(248, 113, 113, 0.10);
+
+  /* Health */
+  --pt-health-safe: #34D399;
+  --pt-health-warn: #FBBF24;
+  --pt-health-danger: #F87171;
+
+  /* Semantic aliases */
+  --pt-surface-page: var(--pt-bg-0);
+  --pt-surface-panel: var(--pt-bg-1);
+  --pt-surface-raised: var(--pt-bg-2);
+  --pt-text-body: var(--pt-fg-0);
+  --pt-text-muted: var(--pt-fg-1);
+  --pt-text-label: var(--pt-fg-2);
+  --pt-link: var(--pt-accent);
+  --pt-focus-ring: var(--pt-accent);
+}
+
+/* Light theme — opt-in scope */
+[data-theme="light"] {
+  --pt-bg-0: #FAFAFB;
+  --pt-bg-1: #F1F2F4;
+  --pt-bg-2: #E9EBED;
+  --pt-bg-3: #DFE2E5;
+
+  --pt-border: #D9DCDF;
+  --pt-border-strong: #C3C8CD;
+
+  --pt-fg-0: #16181B;
+  --pt-fg-1: #4B5563;
+  --pt-fg-2: #6B7280;
+  --pt-fg-3: #B0B6BD;
+
+  --pt-accent: #0D9488;
+  --pt-accent-strong: #0F766E;
+  --pt-accent-dim: #99F6E4;
+  --pt-accent-ink: #FAFAFB;
+  --pt-accent-wash: rgba(13, 148, 136, 0.08);
+
+  --pt-long: #059669;
+  --pt-long-wash: rgba(5, 150, 105, 0.08);
+  --pt-short: #DC2626;
+  --pt-short-wash: rgba(220, 38, 38, 0.08);
+
+  --pt-health-safe: #059669;
+  --pt-health-warn: #D97706;
+  --pt-health-danger: #DC2626;
+}

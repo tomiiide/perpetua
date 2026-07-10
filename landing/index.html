@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-density="compact">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perpetua. Headless logic. Unstyled primitives. Your terminal.</title>
+<meta name="description" content="Decimal-safe trading engines, venue-agnostic data feeds, and Radix-style primitives for perps, swap, and prediction markets. No float math. One commit per frame.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* ===== Perpetua tokens (from design/project/tokens, the page dogfoods them) ===== */
+:root {
+  /* Surfaces */
+  --pt-bg-0:#0B0C0E; --pt-bg-1:#111316; --pt-bg-2:#17191C; --pt-bg-3:#1E2125;
+  /* Hairlines */
+  --pt-border:#232528; --pt-border-strong:#2E3136;
+  /* Ink */
+  --pt-fg-0:#F0F1F2; --pt-fg-1:#9CA3AF; --pt-fg-2:#6B7280; --pt-fg-3:#3F4650;
+  /* Brand accent, electric teal */
+  --pt-accent:#2DD4BF; --pt-accent-strong:#14B8A6; --pt-accent-dim:#134E4A;
+  --pt-accent-ink:#042F2E; --pt-accent-wash:rgba(45,212,191,.08);
+  /* Market semantics */
+  --pt-long:#34D399; --pt-long-wash:rgba(52,211,153,.10);
+  --pt-short:#F87171; --pt-short-wash:rgba(248,113,113,.10);
+  /* Health */
+  --pt-health-safe:#34D399; --pt-health-warn:#FBBF24; --pt-health-danger:#F87171;
+
+  /* Type */
+  --pt-font-display:"Newsreader", Georgia, serif;
+  --pt-font-mono:"IBM Plex Mono","SF Mono",Menlo,monospace;
+  --pt-display-xl:300 64px/1.08 var(--pt-font-display);
+  --pt-display-lg:300 44px/1.15 var(--pt-font-display);
+  --pt-display-md:400 30px/1.25 var(--pt-font-display);
+  --pt-display-sm:400 22px/1.35 var(--pt-font-display);
+  --pt-tracking-label:0.12em; --pt-tracking-wide:0.14em;
+  --pt-numeric:"tnum" 1;
+
+  /* Spacing / density / borders */
+  --pt-space-1:2px; --pt-space-2:4px; --pt-space-3:8px; --pt-space-4:12px;
+  --pt-space-5:16px; --pt-space-6:24px; --pt-space-7:32px; --pt-space-8:48px; --pt-space-9:64px;
+  --pt-radius:0px;
+  --pt-hairline:1px solid var(--pt-border);
+  --pt-hairline-strong:1px solid var(--pt-border-strong);
+  --pt-row-h:24px; --pt-cell-pad-x:8px; --pt-cell-pad-y:3px; --pt-control-h:28px;
+}
+[data-theme="light"] {
+  --pt-bg-0:#FAFAFB; --pt-bg-1:#F1F2F4; --pt-bg-2:#E9EBED; --pt-bg-3:#DFE2E5;
+  --pt-border:#D9DCDF; --pt-border-strong:#C3C8CD;
+  --pt-fg-0:#16181B; --pt-fg-1:#4B5563; --pt-fg-2:#6B7280; --pt-fg-3:#B0B6BD;
+  --pt-accent:#0D9488; --pt-accent-strong:#0F766E; --pt-accent-dim:#99F6E4;
+  --pt-accent-ink:#FAFAFB; --pt-accent-wash:rgba(13,148,136,.08);
+  --pt-long:#059669; --pt-long-wash:rgba(5,150,105,.08);
+  --pt-short:#DC2626; --pt-short-wash:rgba(220,38,38,.08);
+  --pt-health-safe:#059669; --pt-health-warn:#D97706; --pt-health-danger:#DC2626;
+}
+[data-density="comfortable"] { --pt-row-h:32px; --pt-cell-pad-x:12px; --pt-cell-pad-y:6px; --pt-control-h:36px; }
+
+/* ===== Base ===== */
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--pt-bg-0); color:var(--pt-fg-0);
+  font-family:var(--pt-font-mono); font-feature-settings:var(--pt-numeric);
+  -webkit-font-smoothing:antialiased;
+}
+a { color:var(--pt-accent); text-decoration:none; transition:color 120ms linear; }
+a:hover { color:#5EEAD4; }
+[data-theme="light"] a:hover { color:var(--pt-accent-strong); }
+.num { font-variant-numeric:tabular-nums; font-feature-settings:var(--pt-numeric); }
+.wrap { max-width:1280px; margin:0 auto; padding:0 var(--pt-space-7); }
+.serif { font-family:var(--pt-font-display); }
+.italic { font-style:italic; }
+.teal { color:var(--pt-accent); }
+.long { color:var(--pt-long); }
+.short { color:var(--pt-short); }
+
+/* ===== Nav ===== */
+nav {
+  position:sticky; top:0; z-index:20; height:56px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 var(--pt-space-7);
+  border-bottom:var(--pt-hairline);
+  background:color-mix(in srgb, var(--pt-bg-0) 88%, transparent);
+  backdrop-filter:blur(8px);
+}
+.brand { display:flex; align-items:center; gap:var(--pt-space-4); }
+.brand svg { width:26px; height:26px; display:block; }
+.brand .name { font-family:var(--pt-font-display); font-size:21px; color:var(--pt-fg-0); }
+.nav-links { display:flex; align-items:center; gap:28px; font-size:11px; letter-spacing:var(--pt-tracking-label); }
+.nav-links a { color:var(--pt-fg-1); }
+.nav-links a:hover { color:var(--pt-fg-0); }
+.status-dot { display:flex; align-items:center; gap:6px; color:var(--pt-accent); font-size:10px; letter-spacing:var(--pt-tracking-label); }
+
+/* ===== Hero ===== */
+.hero { display:flex; flex-wrap:wrap; gap:var(--pt-space-8); padding:72px var(--pt-space-7) 64px; max-width:1280px; margin:0 auto; align-items:center; }
+.hero-copy { display:flex; flex-direction:column; gap:var(--pt-space-6); flex:1 1 420px; min-width:340px; }
+.eyebrow { font-size:11px; color:var(--pt-fg-2); letter-spacing:var(--pt-tracking-wide); }
+h1 { font:var(--pt-display-xl); color:var(--pt-fg-0); margin:0; letter-spacing:-0.01em; }
+.hero-sub { font-size:13px; line-height:1.7; color:var(--pt-fg-1); margin:0; max-width:460px; }
+.cmd {
+  display:flex; align-items:center; gap:var(--pt-space-4);
+  border:var(--pt-hairline); background:var(--pt-bg-1);
+  padding:12px 16px; font-size:13px; width:fit-content; max-width:100%; flex-wrap:wrap;
+}
+.cmd .dollar { color:var(--pt-fg-3); }
+.cmd .cmd-text { color:var(--pt-fg-0); }
+.cmd .copy { color:var(--pt-fg-3); cursor:pointer; background:none; border:none; font-family:inherit; font-size:14px; }
+.cmd .copy:hover { color:var(--pt-accent); }
+.cta-row { display:flex; gap:var(--pt-space-4); flex-wrap:wrap; }
+.btn {
+  display:inline-flex; align-items:center; gap:var(--pt-space-3);
+  padding:10px 20px; font-size:12px; letter-spacing:0.08em;
+  font-family:inherit; cursor:pointer; border:1px solid transparent;
+  transition:background 120ms linear, color 120ms linear, border-color 120ms linear;
+}
+.btn-primary { background:var(--pt-accent); color:var(--pt-accent-ink); }
+.btn-primary:hover { background:var(--pt-accent-strong); color:var(--pt-accent-ink); }
+.btn-ghost { border:1px solid var(--pt-border-strong); color:var(--pt-fg-0); background:transparent; }
+.btn-ghost:hover { background:var(--pt-bg-2); color:var(--pt-fg-0); }
+
+/* ===== Terminal ===== */
+.terminal { border:var(--pt-hairline); background:var(--pt-bg-1); font-feature-settings:var(--pt-numeric); flex:1 1 520px; max-width:620px; }
+.tbar { display:flex; align-items:stretch; border-bottom:var(--pt-hairline); flex-wrap:wrap; }
+.tbar .cellpair { padding:10px 14px; border-right:var(--pt-hairline); display:flex; align-items:center; gap:var(--pt-space-3); }
+.tbar .pairname { font-size:13px; color:var(--pt-fg-0); }
+.tbar .levtag { font-size:9px; color:var(--pt-accent); border:1px solid var(--pt-accent-dim); padding:1px 4px; }
+.tstat { padding:6px 14px; border-right:var(--pt-hairline); }
+.tstat:last-child { border-right:none; }
+.tstat.grow { flex:1; }
+.tstat .lbl { font-size:9px; color:var(--pt-fg-2); letter-spacing:0.1em; }
+.tstat .val { font-size:13px; color:var(--pt-fg-0); }
+.tlive { padding:6px 14px; display:flex; align-items:center; font-size:10px; color:var(--pt-accent); }
+/* candles */
+.candles { display:flex; align-items:flex-end; gap:4px; height:96px; padding:12px 14px 8px; border-bottom:var(--pt-hairline); }
+.candle { width:10px; height:76px; position:relative; }
+.candle .wick { position:absolute; left:4.5px; width:1px; }
+.candle .body { position:absolute; left:1px; width:8px; }
+/* book + trades */
+.bt-grid { display:grid; grid-template-columns:1fr 1fr; }
+.book-col { border-right:var(--pt-hairline); }
+.col-head { display:flex; justify-content:space-between; padding:6px 12px; border-bottom:var(--pt-hairline); font-size:9px; color:var(--pt-fg-2); letter-spacing:0.1em; }
+.brow { position:relative; display:flex; justify-content:space-between; padding:2px 12px; font-size:11.5px; }
+.brow .depth { position:absolute; right:0; top:0; bottom:0; }
+.brow.ask .depth { background:var(--pt-short-wash); }
+.brow.bid .depth { background:var(--pt-long-wash); }
+.brow .p { position:relative; } .brow .s { position:relative; color:var(--pt-fg-1); }
+.mid-row { display:flex; justify-content:space-between; padding:4px 12px; border-top:var(--pt-hairline); border-bottom:var(--pt-hairline); font-size:11.5px; }
+.mid-row .spr { color:var(--pt-fg-2); }
+.imbalance { display:flex; height:4px; margin:6px 12px 10px; }
+.trow { display:flex; justify-content:space-between; padding:2px 12px; font-size:11.5px; }
+.trow .ts { color:var(--pt-fg-1); } .trow .tt { color:var(--pt-fg-3); }
+.tfoot { padding:6px 12px; border-top:var(--pt-hairline); font-size:9.5px; color:var(--pt-fg-3); letter-spacing:0.08em; }
+@keyframes flashLong { from { background:var(--pt-long-wash);} to { background:transparent;} }
+@keyframes flashShort { from { background:var(--pt-short-wash);} to { background:transparent;} }
+.flash-long { animation:flashLong 600ms ease-out; }
+.flash-short { animation:flashShort 600ms ease-out; }
+
+/* ===== Sections ===== */
+section { border-top:var(--pt-hairline); }
+.sec-inner { max-width:1280px; margin:0 auto; padding:64px var(--pt-space-7); }
+.sec-eyebrow { font-size:11px; color:var(--pt-fg-2); letter-spacing:var(--pt-tracking-wide); margin-bottom:12px; }
+h2 { font:var(--pt-display-lg); color:var(--pt-fg-0); margin:0 0 40px; }
+.sec-note { margin-top:16px; font-size:11px; color:var(--pt-fg-2); line-height:1.7; }
+
+/* Packages table */
+.pkg-table { border:var(--pt-hairline); }
+.pkg-row { display:grid; grid-template-columns:220px 140px 1fr 160px; border-bottom:var(--pt-hairline); background:var(--pt-bg-1); transition:background 120ms linear; }
+.pkg-row:last-child { border-bottom:none; }
+.pkg-row:hover { background:var(--pt-bg-2); }
+.pkg-row .c-name { padding:16px; font-size:13px; color:var(--pt-accent); border-right:var(--pt-hairline); }
+.pkg-row .c-an { padding:16px; font-size:11px; color:var(--pt-fg-2); border-right:var(--pt-hairline); }
+.pkg-row .c-desc { padding:16px; font-size:12px; color:var(--pt-fg-1); line-height:1.6; }
+.pkg-row .c-deps { padding:16px; font-size:11px; color:var(--pt-fg-2); border-left:var(--pt-hairline); text-align:right; }
+
+/* Hooks */
+.hooks-grid { display:grid; grid-template-columns:1fr 1fr; gap:var(--pt-space-8); align-items:start; }
+.hooks-copy { display:flex; flex-direction:column; gap:20px; }
+.hooks-copy h2 { margin:0; }
+.hooks-copy p { font-size:13px; line-height:1.7; color:var(--pt-fg-1); margin:0; }
+.facts { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--pt-border); border:var(--pt-hairline); }
+.fact { background:var(--pt-bg-1); padding:14px 16px; }
+.fact .stat { font-size:16px; color:var(--pt-fg-0); }
+.fact .flabel { font-size:10.5px; color:var(--pt-fg-2); margin-top:4px; letter-spacing:0.06em; }
+.codepanel { border:var(--pt-hairline); background:var(--pt-bg-1); }
+.code-head { display:flex; justify-content:space-between; padding:8px 14px; border-bottom:var(--pt-hairline); font-size:10px; color:var(--pt-fg-2); letter-spacing:0.1em; }
+.code-body { padding:20px; font-size:12.5px; line-height:1.75; overflow-x:auto; }
+.code-body .ln { white-space:pre; min-height:22px; }
+
+
+/* Principles */
+.principles { max-width:1280px; margin:0 auto; padding:56px var(--pt-space-7); display:grid; grid-template-columns:repeat(4,1fr); gap:var(--pt-space-8); }
+.principle { display:flex; flex-direction:column; gap:10px; }
+.principle .ptitle { font-family:var(--pt-font-display); font-size:24px; color:var(--pt-fg-0); }
+.principle .pbody { font-size:12px; line-height:1.7; color:var(--pt-fg-1); }
+
+/* Footer */
+footer { border-top:var(--pt-hairline); }
+.foot-inner { max-width:1280px; margin:0 auto; padding:28px var(--pt-space-7); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+.foot-brand { display:flex; align-items:center; gap:10px; }
+.foot-brand svg { width:20px; height:20px; display:block; }
+.foot-brand span { font-size:11px; color:var(--pt-fg-2); }
+.foot-links { display:flex; gap:24px; font-size:11px; letter-spacing:0.08em; }
+.foot-links a { color:var(--pt-fg-2); }
+.foot-links a:hover { color:var(--pt-fg-0); }
+
+/* theme toggle */
+.theme-toggle { background:none; border:1px solid var(--pt-border-strong); color:var(--pt-fg-1); font-family:inherit; font-size:10px; letter-spacing:0.1em; padding:4px 8px; cursor:pointer; }
+.theme-toggle:hover { color:var(--pt-fg-0); background:var(--pt-bg-2); }
+
+/* ===== Responsive ===== */
+@media (max-width:1024px) {
+  :root { --pt-display-xl:300 48px/1.1 var(--pt-font-display); --pt-display-lg:300 34px/1.18 var(--pt-font-display); }
+  .hooks-grid { grid-template-columns:1fr; }
+  .principles { grid-template-columns:repeat(2,1fr); }
+  .pkg-row { grid-template-columns:1fr 1fr; }
+  .pkg-row .c-desc { grid-column:1 / -1; border-top:var(--pt-hairline); }
+  .pkg-row .c-deps { text-align:left; border-left:none; border-top:var(--pt-hairline); }
+}
+@media (max-width:640px) {
+  .wrap, .sec-inner, .hero, .principles, .foot-inner { padding-left:16px; padding-right:16px; }
+  .nav-links a:not(.keep) { display:none; }
+  .principles { grid-template-columns:1fr; }
+  .facts { grid-template-columns:1fr; }
+  .bt-grid { grid-template-columns:1fr; }
+  .book-col { border-right:none; border-bottom:var(--pt-hairline); }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav>
+  <div class="brand">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" aria-label="Perpetua">
+      <line x1="16" y1="44" x2="16" y2="88" stroke="var(--pt-fg-3)" stroke-width="3"></line>
+      <rect x="10" y="54" width="12" height="22" fill="var(--pt-fg-3)"></rect>
+      <line x1="38" y1="28" x2="38" y2="76" stroke="var(--pt-fg-2)" stroke-width="3"></line>
+      <rect x="32" y="38" width="12" height="24" fill="var(--pt-fg-2)"></rect>
+      <line x1="62" y1="8" x2="62" y2="68" stroke="var(--pt-fg-0)" stroke-width="3"></line>
+      <rect x="62" y="16" width="22" height="26" fill="var(--pt-accent)"></rect>
+    </svg>
+    <span class="name">Perpetua</span>
+  </div>
+  <div class="nav-links">
+    <a href="#packages">PACKAGES</a>
+    <a href="#hooks">HOOKS</a>
+    <a href="#" class="keep">GITHUB</a>
+    <span class="status-dot keep">● ALL VENUES LIVE</span>
+    <button class="theme-toggle keep" id="themeToggle" aria-label="Toggle theme">THEME</button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow">THE VIEM / WAGMI OF PERPS</div>
+    <h1>Headless logic. Unstyled primitives. <span class="italic teal">Your terminal.</span></h1>
+    <p class="hero-sub">Decimal-safe trading engines, venue-agnostic data feeds, and Radix-style primitives for perps, swap, and prediction markets. No float math. One commit per frame.</p>
+    <div class="cmd">
+      <span class="dollar">$</span>
+      <span class="cmd-text">npm i @perpetua/core @perpetua/react</span>
+      <button class="copy" id="copyBtn" title="Copy">⧉</button>
+    </div>
+    <div class="cta-row">
+      <a href="#hooks" class="btn btn-primary">READ THE DOCS →</a>
+      <a href="#packages" class="btn btn-ghost">BROWSE PRIMITIVES</a>
+    </div>
+  </div>
+
+  <!-- live terminal demo -->
+  <div class="terminal" aria-label="Live perps terminal demo">
+    <div class="tbar">
+      <div class="cellpair">
+        <span class="pairname">ETH-PERP</span>
+        <span class="levtag">50×</span>
+      </div>
+      <div class="tstat">
+        <div class="lbl">MARK</div>
+        <div class="val num" id="markPrice">3,412.55</div>
+      </div>
+      <div class="tstat">
+        <div class="lbl">24H</div>
+        <div class="val num long">+2.41%</div>
+      </div>
+      <div class="tstat">
+        <div class="lbl">FUNDING</div>
+        <div class="val num teal">0.0031% <span style="color:var(--pt-fg-2)" id="countdown">59:59</span></div>
+      </div>
+      <div class="tstat grow">
+        <div class="lbl">OI</div>
+        <div class="val num">1.21B</div>
+      </div>
+      <div class="tlive">● LIVE</div>
+    </div>
+
+    <div class="candles" id="candles"></div>
+
+    <div class="bt-grid">
+      <div class="book-col">
+        <div class="col-head"><span>ORDER BOOK · 0.05</span><span>SIZE (ETH)</span></div>
+        <div id="asks"></div>
+        <div class="mid-row">
+          <span class="num" id="bookMid">3,412.55</span>
+          <span class="spr">SPREAD 0.05</span>
+        </div>
+        <div id="bids"></div>
+        <div class="imbalance">
+          <div id="buyBar" style="width:52%; background:var(--pt-long);"></div>
+          <div style="flex:1; background:var(--pt-short);"></div>
+        </div>
+      </div>
+      <div>
+        <div class="col-head"><span>TRADES</span><span>TIME</span></div>
+        <div id="trades"></div>
+      </div>
+    </div>
+    <div class="tfoot">RENDERED BY &lt;OrderBook /&gt; + &lt;TradesFeed /&gt; · MOCK VENUE · NO AUTH</div>
+  </div>
+</header>
+
+<!-- ===== PACKAGES ===== -->
+<section id="packages">
+  <div class="sec-inner">
+    <div class="sec-eyebrow">ARCHITECTURE</div>
+    <h2>Strictly layered. Each layer usable <span class="italic">without the one above it.</span></h2>
+    <div class="pkg-table" id="pkgTable"></div>
+  </div>
+</section>
+
+<!-- ===== HOOKS / CODE ===== -->
+<section id="hooks">
+  <div class="sec-inner">
+    <div class="hooks-grid">
+      <div class="hooks-copy">
+        <div class="sec-eyebrow" style="margin:0;">HEADLESS CORE</div>
+        <h2>The order book is a <span class="italic teal">statechart.</span></h2>
+        <p>Snapshot + delta reconciliation with sequence-gap detection. Auto-resync. Render coalescing to one commit per animation frame. String-decimal math throughout. A price is never a float.</p>
+        <div class="facts" id="facts"></div>
+      </div>
+      <div class="codepanel">
+        <div class="code-head"><span>TERMINAL.TSX</span><span class="teal">● LIVE</span></div>
+        <div class="code-body" id="codeBody"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRINCIPLES ===== -->
+<section>
+  <div class="principles" id="principles"></div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-brand">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" aria-hidden="true">
+        <line x1="16" y1="44" x2="16" y2="88" stroke="var(--pt-fg-3)" stroke-width="3"></line>
+        <rect x="10" y="54" width="12" height="22" fill="var(--pt-fg-3)"></rect>
+        <line x1="38" y1="28" x2="38" y2="76" stroke="var(--pt-fg-2)" stroke-width="3"></line>
+        <rect x="32" y="38" width="12" height="24" fill="var(--pt-fg-2)"></rect>
+        <line x1="62" y1="8" x2="62" y2="68" stroke="var(--pt-fg-0)" stroke-width="3"></line>
+        <rect x="62" y="16" width="22" height="26" fill="var(--pt-accent)"></rect>
+      </svg>
+      <span>© 2026 Perpetua · MIT License</span>
+    </div>
+    <div class="foot-links">
+      <a href="#">GITHUB</a>
+      <a href="#">NPM</a>
+      <a href="#">CHANGELOG</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ===== Theme toggle ===== */
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const el = document.documentElement;
+  el.dataset.theme = el.dataset.theme === 'light' ? 'dark' : 'light';
+});
+
+/* ===== Copy command ===== */
+document.getElementById('copyBtn').addEventListener('click', () => {
+  navigator.clipboard && navigator.clipboard.writeText('npm i @perpetua/core @perpetua/react');
+  const b = document.getElementById('copyBtn');
+  const prev = b.textContent; b.textContent = '✓'; b.style.color = 'var(--pt-accent)';
+  setTimeout(() => { b.textContent = prev; b.style.color = ''; }, 1000);
+});
+
+/* ===== Static section content ===== */
+const packages = [
+  { name:'@perpetua/core', analogue:'viem', desc:'Single-venue client, actions, engines, decimal math, the venue contract. No DOM, no CSS, no React.', deps:'nothing' },
+  { name:'@perpetua/venues', analogue:'@wagmi/connectors', desc:'Venue implementations: mock, hyperliquid, pod. Third parties ship their own against the contract.', deps:'core' },
+  { name:'@perpetua/desk', analogue:'@wagmi/core', desc:'Ties N clients together: MarketId routing, merged markets and blotter, per-venue health.', deps:'core' },
+  { name:'@perpetua/react', analogue:'wagmi', desc:'Hooks 1:1 over desk actions, plus unstyled primitives and connected widgets. Data-attributes for state.', deps:'desk · peer: react' },
+  { name:'@perpetua/theme', analogue:'n/a', desc:'Pure CSS artifacts: design tokens, Tailwind preset, MUI bridge. Swappable for any styling system.', deps:'nothing' },
+];
+document.getElementById('pkgTable').innerHTML = packages.map(p => `
+  <div class="pkg-row">
+    <div class="c-name">${p.name}</div>
+    <div class="c-an">${p.analogue}</div>
+    <div class="c-desc">${p.desc}</div>
+    <div class="c-deps">${p.deps}</div>
+  </div>`).join('');
+
+const hookFacts = [
+  { stat:'0 floats', label:'STRING-DECIMAL MATH ON EVERY PRICE' },
+  { stat:'1 commit / frame', label:'RENDER COALESCING UNDER FULL FEED' },
+  { stat:'3 venues', label:'MOCK · HYPERLIQUID · POD REFERENCE' },
+  { stat:'N:1 streams', label:'SUBSCRIPTION DEDUPE ACROSS WIDGETS' },
+];
+document.getElementById('facts').innerHTML = hookFacts.map(f => `
+  <div class="fact"><div class="stat num">${f.stat}</div><div class="flabel">${f.label}</div></div>`).join('');
+
+const C='var(--pt-fg-3)', K='var(--pt-accent)', F='var(--pt-fg-0)', S='var(--pt-long)', P='var(--pt-fg-1)';
+const codeLines = [
+  [['// read-only terminal, no auth required', C]],
+  [['const', K],[' venue = ', P],['createClient', F],['({ venue: ', P],['hyperliquid', F],['() });', P]],
+  [[' ', P]],
+  [['const', K],[' book = ', P],['useOrderBook', F],['(venue, ', P],["'ETH-PERP'", S],[', {', P]],
+  [['  grouping: ', P],["'0.05'", S],[',', P]],
+  [['});', P]],
+  [[' ', P]],
+  [['const', K],[' entry = ', P],['useOrderEntry', F],['(venue, market);', P]],
+  [['// idle → validating → confirmable', C]],
+  [['//      → submitting → acked | rejected', C]],
+  [[' ', P]],
+  [['return', K],[' (', P]],
+  [['  <', P],['OrderBook', F],[' book={book}', P]],
+  [['    onPriceClick={entry.setPrice} />', P]],
+  [[');', P]],
+];
+document.getElementById('codeBody').innerHTML = codeLines.map(parts =>
+  `<div class="ln">${parts.map(([t,c]) => `<span style="color:${c}">${t.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`).join('')}</div>`
+).join('');
+
+const principles = [
+  { title:'Decimal-safe.', body:'Prices and sizes are strings end to end. Tick and lot rounding read market metadata, never epsilon hacks.' },
+  { title:'Venue-agnostic.', body:'One subscribe contract, capability flags, normalized events. CLOB push or batch-auction poll, same widgets.' },
+  { title:'Headless first.', body:'Every hook runs in Node, bots, or any framework. Components are optional; primitives are unstyled.' },
+  { title:'Tokens, not themes.', body:'Components style themselves only through --pt-* vars and data-attributes. Compact and comfortable are one token flip.' },
+];
+document.getElementById('principles').innerHTML = principles.map(p => `
+  <div class="principle"><div class="ptitle">${p.title}</div><div class="pbody">${p.body}</div></div>`).join('');
+
+/* ===== Live terminal engine (ported from the design prototype) ===== */
+const fmt = v => v.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 });
+const state = { mid:3412.55, dir:1, history:[], trades:[], askSizes:[], bidSizes:[], flashIdx:-1 };
+
+function randSizes(){ return Array.from({length:5}, () => 0.4 + Math.random()*24); }
+function makeTrade(p, ts){
+  const up = Math.random() > 0.45;
+  const d = new Date(ts); const pad = n => String(n).padStart(2,'0');
+  return {
+    price: fmt(p + (Math.random()-0.5)*0.4),
+    size: (0.05 + Math.random()*8).toFixed(3),
+    color: up ? 'var(--pt-long)' : 'var(--pt-short)',
+    time: pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds()),
+  };
+}
+
+// seed
+(function seed(){
+  let p = 3404; const history = [];
+  for (let i=0;i<26;i++){ p += (Math.random()-0.42)*3.2; history.push(p); }
+  state.history = history; state.mid = p;
+  state.askSizes = randSizes(); state.bidSizes = randSizes();
+  const t = []; for (let i=0;i<9;i++) t.push(makeTrade(p - i*0.3, Date.now() - i*1400));
+  state.trades = t;
+})();
+
+const $ = id => document.getElementById(id);
+function render(){
+  const s = state, tick = 0.05;
+  const base = Math.round(s.mid / tick) * tick;
+  const markColor = s.dir >= 0 ? 'var(--pt-long)' : 'var(--pt-short)';
+
+  $('markPrice').textContent = fmt(s.mid);
+  $('markPrice').style.color = markColor;
+  $('bookMid').textContent = fmt(s.mid);
+  $('bookMid').style.color = markColor;
+
+  const mkRows = (sizes, side) => {
+    const max = Math.max(...sizes, 1);
+    return sizes.map((sz,i) => ({
+      price: fmt(base + (side==='ask'?1:-1)*(i+1)*tick),
+      size: sz.toFixed(3),
+      depthPct: Math.round((sz/max)*88),
+      flash: i === s.flashIdx,
+    }));
+  };
+  const asks = mkRows(s.askSizes,'ask').reverse();
+  const bids = mkRows(s.bidSizes,'bid');
+  const rowHtml = (r, side) => `
+    <div class="brow ${side}${r.flash ? (side==='ask'?' flash-short':' flash-long') : ''}">
+      <div class="depth" style="width:${r.depthPct}%"></div>
+      <span class="p ${side==='ask'?'short':'long'} num">${r.price}</span>
+      <span class="s num">${r.size}</span>
+    </div>`;
+  $('asks').innerHTML = asks.map(r => rowHtml(r,'ask')).join('');
+  $('bids').innerHTML = bids.map(r => rowHtml(r,'bid')).join('');
+
+  $('trades').innerHTML = s.trades.map(t => `
+    <div class="trow"><span class="num" style="color:${t.color}">${t.price}</span>
+    <span class="ts num">${t.size}</span><span class="tt num">${t.time}</span></div>`).join('');
+
+  // candles
+  const h = s.history.length ? s.history : [s.mid];
+  const lo = Math.min(...h), hi = Math.max(...h), span = Math.max(hi-lo, 0.1), H = 76;
+  const y = v => Math.round((1-(v-lo)/span)*(H-10))+2;
+  $('candles').innerHTML = h.map((v,i) => {
+    const prev = i>0 ? h[i-1] : v-0.5;
+    const top = y(Math.max(v,prev)), bot = y(Math.min(v,prev));
+    const bodyH = Math.max(bot-top, 2);
+    const color = v>=prev ? 'var(--pt-long)' : 'var(--pt-short)';
+    return `<div class="candle">
+      <div class="wick" style="top:${Math.max(top-4,0)}px; height:${bodyH+8}px; background:${color}"></div>
+      <div class="body" style="top:${top}px; height:${bodyH}px; background:${color}"></div>
+    </div>`;
+  }).join('');
+
+  // imbalance
+  const buySum = s.bidSizes.reduce((a,b)=>a+b,0), sellSum = s.askSizes.reduce((a,b)=>a+b,0);
+  $('buyBar').style.width = Math.round((buySum/Math.max(buySum+sellSum,1))*100)+'%';
+}
+
+function tick(){
+  const s = state;
+  const delta = (Math.random()-0.48)*2.4;
+  s.mid = Math.max(3300, s.mid + delta);
+  s.dir = delta >= 0 ? 1 : -1;
+  s.history = s.history.concat(s.mid).slice(-26);
+  s.trades = [makeTrade(s.mid, Date.now())].concat(s.trades).slice(0,9);
+  s.askSizes = randSizes(); s.bidSizes = randSizes();
+  s.flashIdx = Math.floor(Math.random()*5);
+  render();
+}
+
+function countdown(){
+  const msLeft = 3600000 - (Date.now() % 3600000);
+  const mm = String(Math.floor(msLeft/60000)).padStart(2,'0');
+  const ss = String(Math.floor((msLeft%60000)/1000)).padStart(2,'0');
+  $('countdown').textContent = mm+':'+ss;
+}
+
+render(); countdown();
+setInterval(tick, 900);
+setInterval(countdown, 1000);
+</script>
+</body>
+</html>

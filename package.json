@@ -1,0 +1,17 @@
+{
+  "name": "perpetua",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Foundational widgets for pro trading software (working name: Perpetua)",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "pnpm -r run build",
+    "dev": "pnpm -r --parallel run dev",
+    "test": "pnpm -r run test",
+    "typecheck": "pnpm -r run typecheck",
+    "lint": "pnpm -r run lint"
+  }
+}

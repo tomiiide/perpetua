@@ -1,0 +1,32 @@
+/* Perpetua spacing, density, radii, borders */
+:root {
+  --pt-space-1: 2px;
+  --pt-space-2: 4px;
+  --pt-space-3: 8px;
+  --pt-space-4: 12px;
+  --pt-space-5: 16px;
+  --pt-space-6: 24px;
+  --pt-space-7: 32px;
+  --pt-space-8: 48px;
+  --pt-space-9: 64px;
+
+  /* Brutalist: square corners everywhere */
+  --pt-radius: 0px;
+
+  /* Hairlines only — never heavier than 1px */
+  --pt-hairline: 1px solid var(--pt-border);
+  --pt-hairline-strong: 1px solid var(--pt-border-strong);
+
+  /* Density axis — compact is default (pro trading) */
+  --pt-row-h: 24px;
+  --pt-cell-pad-x: 8px;
+  --pt-cell-pad-y: 3px;
+  --pt-control-h: 28px;
+}
+
+[data-density="comfortable"] {
+  --pt-row-h: 32px;
+  --pt-cell-pad-x: 12px;
+  --pt-cell-pad-y: 6px;
+  --pt-control-h: 36px;
+}

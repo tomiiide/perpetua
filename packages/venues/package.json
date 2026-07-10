@@ -1,0 +1,29 @@
+{
+  "name": "@perpetua/venues",
+  "version": "0.0.0",
+  "description": "Venue implementations against @perpetua/core's contract: mock, hyperliquid, pod, binance.",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "files": ["dist"],
+  "exports": {
+    "./hyperliquid": {
+      "types": "./dist/hyperliquid/index.d.ts",
+      "import": "./dist/hyperliquid/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@perpetua/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "tsup": "^8.3.5",
+    "vitest": "^2.1.8"
+  }
+}
