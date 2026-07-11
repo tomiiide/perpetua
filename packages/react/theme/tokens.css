@@ -1,0 +1,138 @@
+/* Perpetua design tokens — the CSS contract @perpetua/react components reference.
+   Compiled from the canonical definitions in /design/tokens (colors, typography, spacing).
+   Terminal-brutalist: near-black surfaces, electric-teal accent, mono UI, square corners.
+   Naming: --pt-{category}-{name}. Tailwind preset + MUI bridge consume the same vars. */
+
+:root,
+[data-theme="dark"] {
+  /* ---------- Color: surfaces (elevation ladder, darkest → lightest) ---------- */
+  --pt-bg-0: #0b0c0e;   /* page */
+  --pt-bg-1: #111316;   /* panel */
+  --pt-bg-2: #17191c;   /* raised / hover */
+  --pt-bg-3: #1e2125;   /* active / press */
+
+  /* ---------- Color: hairlines (all structural work; no shadows) ---------- */
+  --pt-border: #232528;
+  --pt-border-strong: #2e3136;
+
+  /* ---------- Color: ink ---------- */
+  --pt-fg-0: #f0f1f2;   /* primary text, prices */
+  --pt-fg-1: #9ca3af;   /* secondary */
+  --pt-fg-2: #6b7280;   /* labels, captions */
+  --pt-fg-3: #3f4650;   /* disabled, ghost marks */
+
+  /* ---------- Color: brand accent — electric teal (used sparingly) ---------- */
+  --pt-accent: #2dd4bf;
+  --pt-accent-strong: #14b8a6;
+  --pt-accent-dim: #134e4a;
+  --pt-accent-ink: #042f2e;                 /* text on accent fill */
+  --pt-accent-wash: rgba(45, 212, 191, 0.08);
+
+  /* ---------- Color: market semantics (the tokens that matter) ---------- */
+  --pt-long: #34d399;                       /* buy / up / profit */
+  --pt-long-wash: rgba(52, 211, 153, 0.1);  /* depth bars, row tints */
+  --pt-short: #f87171;                       /* sell / down / loss */
+  --pt-short-wash: rgba(248, 113, 113, 0.1);
+  --pt-flat: var(--pt-fg-1);
+  /* Flash-on-change (FlashCell) — reuses the long/short washes */
+  --pt-flash-up: var(--pt-long-wash);
+  --pt-flash-down: var(--pt-short-wash);
+  --pt-flash-duration: 600ms;
+
+  /* ---------- Color: account health ---------- */
+  --pt-health-safe: #34d399;
+  --pt-health-warn: #fbbf24;
+  --pt-health-danger: #f87171;
+
+  /* ---------- Semantic aliases ---------- */
+  --pt-surface-page: var(--pt-bg-0);
+  --pt-surface-panel: var(--pt-bg-1);
+  --pt-surface-raised: var(--pt-bg-2);
+  --pt-text-body: var(--pt-fg-0);
+  --pt-text-muted: var(--pt-fg-1);
+  --pt-text-label: var(--pt-fg-2);
+  --pt-link: var(--pt-accent);
+  --pt-focus-ring: var(--pt-accent);
+
+  /* ---------- Typography — serif display voice, mono for all data/UI ---------- */
+  --pt-font-display: "Newsreader", Georgia, serif;
+  --pt-font-mono: "IBM Plex Mono", "SF Mono", Menlo, ui-monospace, monospace;
+  --pt-display-xl: 300 64px/1.08 var(--pt-font-display);
+  --pt-display-lg: 300 44px/1.15 var(--pt-font-display);
+  --pt-display-md: 400 30px/1.25 var(--pt-font-display);
+  --pt-display-sm: 400 22px/1.35 var(--pt-font-display);
+  --pt-mono-lg: 500 16px/1.4 var(--pt-font-mono);
+  --pt-mono-md: 400 13px/1.5 var(--pt-font-mono);
+  --pt-mono-sm: 400 12px/1.45 var(--pt-font-mono);
+  --pt-mono-xs: 400 11px/1.4 var(--pt-font-mono);
+  --pt-mono-2xs: 400 10px/1.3 var(--pt-font-mono);
+  --pt-tracking-label: 0.12em;              /* uppercase mono labels */
+  --pt-tracking-wide: 0.14em;
+  --pt-numeric: "tnum" 1;                    /* tabular numerals in all data contexts */
+
+  /* ---------- Spacing (2px base) ---------- */
+  --pt-space-1: 2px;  --pt-space-2: 4px;  --pt-space-3: 8px;
+  --pt-space-4: 12px; --pt-space-5: 16px; --pt-space-6: 24px;
+  --pt-space-7: 32px; --pt-space-8: 48px; --pt-space-9: 64px;
+
+  /* ---------- Shape — square corners everywhere ---------- */
+  --pt-radius: 0px;
+  --pt-hairline: 1px solid var(--pt-border);
+  --pt-hairline-strong: 1px solid var(--pt-border-strong);
+
+  /* ---------- Density axis (remapped by [data-density]) — compact is default ---------- */
+  --pt-row-h: 24px;
+  --pt-control-h: 28px;
+  --pt-cell-pad-x: 8px;
+  --pt-cell-pad-y: 3px;
+
+  /* ---------- Motion — functional only, ease-out, ≤150ms ---------- */
+  --pt-ease: cubic-bezier(0.2, 0, 0, 1);
+  --pt-dur-fast: 100ms;
+  --pt-dur-med: 150ms;
+
+  /* ---------- Z ---------- */
+  --pt-z-sticky: 10; --pt-z-popover: 40; --pt-z-modal: 50; --pt-z-toast: 60;
+}
+
+/* ---------- Light theme: opt-in, only overrides ---------- */
+[data-theme="light"] {
+  --pt-bg-0: #fafafb;
+  --pt-bg-1: #f1f2f4;
+  --pt-bg-2: #e9ebed;
+  --pt-bg-3: #dfe2e5;
+  --pt-border: #d9dcdf;
+  --pt-border-strong: #c3c8cd;
+  --pt-fg-0: #16181b;
+  --pt-fg-1: #4b5563;
+  --pt-fg-2: #6b7280;
+  --pt-fg-3: #b0b6bd;
+  --pt-accent: #0d9488;
+  --pt-accent-strong: #0f766e;
+  --pt-accent-dim: #99f6e4;
+  --pt-accent-ink: #fafafb;
+  --pt-accent-wash: rgba(13, 148, 136, 0.08);
+  --pt-long: #059669;
+  --pt-long-wash: rgba(5, 150, 105, 0.08);
+  --pt-short: #dc2626;
+  --pt-short-wash: rgba(220, 38, 38, 0.08);
+  --pt-health-safe: #059669;
+  --pt-health-warn: #d97706;
+  --pt-health-danger: #dc2626;
+}
+
+/* ---------- Density modes ---------- */
+[data-density="comfortable"] {
+  --pt-row-h: 32px;
+  --pt-control-h: 36px;
+  --pt-cell-pad-x: 12px;
+  --pt-cell-pad-y: 6px;
+}
+
+/* ---------- Regional convention: red-up/green-down (KR/JP/CN markets) ---------- */
+[data-updown="inverted"] {
+  --pt-long: #f87171;
+  --pt-long-wash: rgba(248, 113, 113, 0.1);
+  --pt-short: #34d399;
+  --pt-short-wash: rgba(52, 211, 153, 0.1);
+}
