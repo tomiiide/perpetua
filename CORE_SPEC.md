@@ -96,12 +96,13 @@ const unwatch = watchOrderBook(client, {
 });
 ```
 
-ESM-only, tree-shakeable, zero runtime deps except a decimal library (evaluate: `big.js` vs bigint-scaled integers; decision required by M1).
+ESM-only, tree-shakeable, zero runtime deps: the decimal engine is a hand-rolled scaled-bigint, internal-only (never in the public type surface). See §3, §12.
 
 ## 3. Numeric policy
 
-- Wire → domain: all prices/sizes parsed into `Dec` (opaque decimal type), never `number`.
-- Public API exposes `Dec` plus pre-formatted strings; `number` appears only in ratios explicitly marked lossy (`spreadPct`, `imbalance`, chart coords).
+- Public boundary: every price/size crosses the public API as a decimal `string` (wire-native, exact, JSON/state-safe) — never a `number`, never a custom decimal type. Consumers display, store, and serialize it directly; the `/math` helpers (string-in/string-out) cover the arithmetic.
+- Exact arithmetic is internal-only: strings are parsed to an opaque decimal at the venue boundary, computed with a decimal library inside `/engines`, `/math`, `/format`, and serialized back to `string` before leaving. No IEEE-754 float ever touches a price or size (G3). The decimal type is never exported, so the impl (§12) stays swappable.
+- `number` appears only in ratios explicitly marked lossy (`spreadPct`, `imbalance`, `roe`, `impactPct`, chart coords).
 - All rounding is explicit: `tickRound(price, market, 'down'|'up'|'nearest')`, `lotRound(size, market, mode)`. No implicit rounding anywhere.
 - Formatters return structured parts (`{ sign, int, frac, unit }`) so UIs can style pieces independently.
 
@@ -180,7 +181,7 @@ The full `Capabilities` interface lives in MODELS.md (single definition): `match
 - Poll cadence = one `ob_getOrderbook` per `auction_interval`; BookEngine clause 3 (no-seq fallback) applies. `timestamp` + `new_orders_count` + `buys_count`/`sells_count` are the staleness/change signals.
 - Batch auctions surface in the UI contract: `useOrderBook` gains `nextAuctionIn` and `clearingPrice` fields (null on continuous venues) — an auction-countdown widget is a pod-native differentiator.
 - `useTradesFeed` on pod: capability-degraded mode synthesizes prints from batch clearing prices; components must render gracefully with `publicTape: false`.
-- Encoding shims: `HexUint256` (1e18) → `Dec`; signed decimal strings → `Dec`; µs → ms normalization at the venue boundary. All three conversions live only in the venue.
+- Encoding shims: `HexUint256` (1e18) → decimal `string`; signed decimal strings → normalized decimal `string`; µs → ms normalization at the venue boundary. All three conversions live only in the venue.
 - Pagination is per-method (cursor formats differ; `ob_getFills` is time-windowed, max 500, `to_ts` exclusive) — hidden behind the venue.
 - Open questions: websocket/`eth_subscribe` availability (overview mentions eth-layer subscriptions; whether book events are derivable from orderbook-precompile logs needs testing), mainnet URL and rate limits (only `https://rpc.podtestnet.dev/` is documented).
 
@@ -348,7 +349,7 @@ Thin bindings, wagmi-style: each hook is a 1:1 wrapper over a **desk action** (`
 | Hook | Returns (abridged) | Notes |
 |---|---|---|
 | `useMarkets()` | `{ markets, byId, status }` | metadata foundation; everything reads tick/lot from here |
-| `useOrderBook(marketId, opts)` | `{ bids, asks, mid, spread, spreadPct, imbalance, status, changes }` | opts: `grouping: Dec`, `depth`, `frameBudget` |
+| `useOrderBook(marketId, opts)` | `{ bids, asks, mid, spread, spreadPct, imbalance, status, changes }` | opts: `grouping: string`, `depth`, `frameBudget` |
 | `useTradesFeed(marketId, opts)` | `{ trades, status }` | ring buffer, `maxRows` default 200 |
 | `useCandles(marketId, resolution)` | `{ candles, live, status }` | feeds lightweight-charts directly |
 | `useMarkPrice / useIndexPrice` | `{ price, ts, stale }` | |
@@ -417,7 +418,7 @@ Rationale: hooks + primitives are the adoption funnel and the builder-code carri
 
 ## 12. Open questions
 
-- Decimal impl: `big.js` vs scaled bigint (perf vs DX) — resolve in M0 with the BookEngine bench.
+- Internal decimal impl: **resolved — scaled bigint** (signed bigint mantissa + decimal scale; add/sub/mul exact, div to 20 dp half-up). Chosen for native-primitive speed over big.js's digit-array math; zero runtime deps. Purely internal — the public boundary is `string` (§3), so it stays swappable without a breaking change. M0 BookEngine bench may still revisit.
 - Builder-code attachment point: venue config vs client config (leaning venue — it's venue-specific; pod's equivalent mechanism TBD).
 - Framework bindings beyond React (Vue/Svelte) — client layer makes them cheap; defer until asked.
 - Server-side candle prefetch for SSR — deferred (see §5.3).

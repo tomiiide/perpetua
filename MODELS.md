@@ -4,15 +4,17 @@ The normalized types every engine, action, and hook speaks. Wire formats (HL dec
 
 Design rules:
 1. **Superset with nullables** — fields some venues lack are `null`, and `Capabilities` explains *why*, so UIs degrade deliberately.
-2. **Explicit over conventional** — no signed sizes, no implied sides, no venue sign conventions. `side` is always an enum; sizes are always positive `Dec`.
+2. **Explicit over conventional** — no signed sizes, no implied sides, no venue sign conventions. `side` is always an enum; sizes are always positive decimal strings.
 3. **Typed extension bag** — irreducibly venue-specific data lives in `ext`, typed per venue via declaration merging, never `any`.
 4. **Every mapping is a fixture test** — the per-venue mapping tables at the bottom are executable claims.
 
 ```ts
 // ───────────────────────────── primitives ─────────────────────────────
 
-/** Opaque decimal. Backed by scaled bigint or big.js (M0 decision). Never a float. */
-type Dec = { readonly __brand: 'Dec' };
+// Prices and sizes are decimal `string` (wire-native, exact, JSON/state-safe).
+// Exact arithmetic is internal-only (big.js-backed, CORE_SPEC.md §3/§12); no
+// float ever touches a price or size. Consumers use the `/math` helpers
+// (string-in/string-out) when they need arithmetic.
 
 /** Milliseconds. Venue implementations downscale µs wire formats (pod); sub-ms precision, if needed, goes in ext. */
 type Ts = number;
@@ -51,19 +53,19 @@ interface Market {
   symbol: string;                 // display: "ETH-PERP", "NVDAx/USD"
   base: string; quote: string;    // display symbols
   type: 'perp' | 'spot';
-  tickSize: Dec;                  // all rounding derives from these two
-  lotSize: Dec;
-  minNotional: Dec | null;
+  tickSize: string;                  // all rounding derives from these two
+  lotSize: string;
+  minNotional: string | null;
   maxLeverage: number | null;     // perp only
-  makerFee: Dec; takerFee: Dec;   // rates; pod puts fees here, not on fills
+  makerFee: string; takerFee: string;   // rates; pod puts fees here, not on fills
   ext?: MarketExt;                // e.g. ext.pod.auctionInterval, ext.pod.tokenAddresses
 }
 
 // ───────────────────────────── order book ─────────────────────────────
 
 interface BookLevel {
-  price: Dec;
-  size: Dec;                      // base units, always positive
+  price: string;
+  size: string;                      // base units, always positive
   orderCount: number | null;      // HL: n · pod: null (pre-aggregated)
   minExpiry: Ts | null;           // pod: minimum_expiry · HL: null
 }
@@ -72,22 +74,22 @@ interface BookState {
   marketId: MarketId;
   bids: BookLevel[];              // desc — engine re-sorts, never trusts wire order
   asks: BookLevel[];              // asc
-  mid: Dec | null; spread: Dec | null; spreadPct: number | null;
+  mid: string | null; spread: string | null; spreadPct: number | null;
   imbalance: number | null;       // lossy ratio, number is fine
-  grouping: Dec;                  // client-side grouping currently applied
+  grouping: string;                  // client-side grouping currently applied
   status: 'connecting' | 'live' | 'stale' | 'resyncing' | 'error';
   ts: Ts;
   changes: LevelFlash[];          // per-emission flash tags (engine output, for FlashCell)
   // batch-auction venues only (null on continuous):
-  clearingPrice: Dec | null;
+  clearingPrice: string | null;
   nextAuctionIn: number | null;   // ms until next matching round
 }
 
 /** Engine OUTPUT: which rendered levels changed, for flash animations. */
-type LevelFlash = { price: Dec; side: Side; dir: 'up' | 'down' | 'new' | 'gone' };
+type LevelFlash = { price: string; side: Side; dir: 'up' | 'down' | 'new' | 'gone' };
 
 /** Venue INPUT: a raw level mutation on the wire. size 0 = remove level. */
-type LevelDelta = { side: Side; price: Dec; size: Dec };
+type LevelDelta = { side: Side; price: string; size: string };
 
 /** Venue → engine events. The engine, not the venue, owns ordering/gap logic. */
 type BookEvent =
@@ -99,7 +101,7 @@ type BookEvent =
 interface Trade {
   id: string;
   marketId: MarketId;
-  price: Dec; size: Dec;
+  price: string; size: string;
   side: Side | null;              // aggressor; null when venue doesn't attribute
   ts: Ts;
   synthetic: boolean;             // pod: true — derived from batch clearing price
@@ -115,31 +117,31 @@ type Resolution =
 
 interface Candle {
   ts: Ts;                         // open time; engine normalizes newest-first venues (pod) to asc
-  open: Dec; high: Dec; low: Dec; close: Dec; volume: Dec;
+  open: string; high: string; low: string; close: string; volume: string;
   closed: boolean;                // false = live partial candle
 }
 
 // ───────────────────────────── pricing / funding ─────────────────────────────
 
 interface Prices {
-  mark: Dec | null; index: Dec | null; oracle: Dec | null;
+  mark: string | null; index: string | null; oracle: string | null;
   ts: Ts; stale: boolean;
 }
 
 interface Funding {
-  rate: Dec;                      // normalized sign: POSITIVE = longs pay shorts, on all venues
-  predicted: Dec | null;          // HL: yes · pod: null
+  rate: string;                      // normalized sign: POSITIVE = longs pay shorts, on all venues
+  predicted: string | null;          // HL: yes · pod: null
   nextAt: Ts | null;              // HL: yes · pod: null (per-batch accrual)
-  indexCum: Dec | null;           // pod: funding_index · HL: null
+  indexCum: string | null;           // pod: funding_index · HL: null
   intervalUs: number | null;
   ts: Ts;
 }
 
 interface MarketStats {
-  vol24h: Dec; high24h: Dec; low24h: Dec;
+  vol24h: string; high24h: string; low24h: string;
   change24hPct: number;
-  openInterest: Dec | null;       // quote notional
-  lastPrice: Dec;
+  openInterest: string | null;       // quote notional
+  lastPrice: string;
   ts: Ts;
 }
 
@@ -163,10 +165,10 @@ interface Order {
   side: Side;                     // derived from pod signed initial_size at boundary
   type: OrderType;
   status: OrderStatus;
-  price: Dec | null;              // null for market orders
-  size: Dec;                      // original, positive, base units
-  filled: Dec;                    // base units
-  avgFillPrice: Dec | null;       // pod: effective_price
+  price: string | null;              // null for market orders
+  size: string;                      // original, positive, base units
+  filled: string;                    // base units
+  avgFillPrice: string | null;       // pod: effective_price
   tif: Tif;
   reduceOnly: boolean;
   origin: 'user' | 'engine';      // engine = venue-generated: liquidation, fired trigger (pod kind)
@@ -180,9 +182,9 @@ interface Fill {
   orderId: string;
   marketId: MarketId;
   side: Side;
-  price: Dec;                     // pod: batch clearing price
-  size: Dec;                      // base
-  fee: Dec | null;                // pod: null (always zero on wire; rates live on Market)
+  price: string;                     // pod: batch clearing price
+  size: string;                      // base
+  fee: string | null;                // pod: null (always zero on wire; rates live on Market)
   ts: Ts;
 }
 
@@ -194,32 +196,32 @@ interface PerpPosition {
   kind: 'perp';
   marketId: MarketId;
   side: PositionSide;
-  size: Dec;                      // positive; side carries direction
-  notional: Dec;
-  entryPrice: Dec; markPrice: Dec;
-  liqPrice: Dec | null;
-  margin: Dec; leverage: number;
+  size: string;                      // positive; side carries direction
+  notional: string;
+  entryPrice: string; markPrice: string;
+  liqPrice: string | null;
+  margin: string; leverage: number;
   marginMode: 'cross' | 'isolated' | null;
-  uPnl: Dec; rPnl: Dec; roe: number;
-  fundingAccrued: Dec | null;     // pod: yes · HL: cumFunding
-  tpsl: { tp: Dec | null; sl: Dec | null };
+  uPnl: string; rPnl: string; roe: number;
+  fundingAccrued: string | null;     // pod: yes · HL: cumFunding
+  tpsl: { tp: string | null; sl: string | null };
 }
 
 interface SpotHolding {
   kind: 'spot';
   marketId: MarketId;
-  balance: Dec; free: Dec; locked: Dec;
-  costBasis: Dec | null; markPrice: Dec;
-  uPnl: Dec | null; rPnl: Dec | null;
+  balance: string; free: string; locked: string;
+  costBasis: string | null; markPrice: string;
+  uPnl: string | null; rPnl: string | null;
 }
 
 interface AccountSnapshot {
   positions: Position[];
-  equity: Dec;                    // pod: account_value · HL: accountValue
-  cash: Dec | null;
-  withdrawable: Dec;
-  totalUPnl: Dec; totalRPnl: Dec;
-  marginUsed: Dec; maintenanceMargin: Dec;
+  equity: string;                    // pod: account_value · HL: accountValue
+  cash: string | null;
+  withdrawable: string;
+  totalUPnl: string; totalRPnl: string;
+  marginUsed: string; maintenanceMargin: string;
   health: { ratio: number; band: 'safe' | 'warn' | 'danger' };  // engine-derived, venue-agnostic
   ts: Ts;
 }
@@ -228,9 +230,9 @@ interface Trigger {                // normalized whether inline (HL) or separate
   id: string;
   marketId: MarketId;
   type: 'takeProfit' | 'stopLoss';
-  triggerPrice: Dec;
-  limitPrice: Dec | null;         // null = market on trigger
-  size: Dec; side: Side;
+  triggerPrice: string;
+  limitPrice: string | null;         // null = market on trigger
+  size: string; side: Side;
   reduceOnly: boolean;
   ext?: TriggerExt;
 }
@@ -253,7 +255,7 @@ interface MarketExt {} interface OrderExt {} interface TriggerExt {}
 | Wire | Canonical |
 |---|---|
 | coin `"ETH"` | `MarketId("ETH")`, `symbol: "ETH-PERP"` |
-| decimal strings `"3412.5"` | `Dec` |
+| decimal strings `"3412.5"` | decimal `string` (passthrough) |
 | ms timestamps | `Ts` passthrough |
 | l2Book levels `{px, sz, n}` (pushed full top-N) | `BookEvent{type:'snapshot'}` → `bookFeed: 'pushSnapshot'` |
 | trades ws | `Trade{synthetic: false}` |
@@ -265,8 +267,8 @@ interface MarketExt {} interface OrderExt {} interface TriggerExt {}
 | Wire | Canonical |
 |---|---|
 | `orderbook_id` Bytes32 | `MarketId(hex)`, `symbol` from `name` |
-| `HexUint256` 1e18 | `Dec` (scale-aware parse) |
-| signed decimal strings (pnl, funding, sizes) | `Dec` + explicit enum where sign was semantic |
+| `HexUint256` 1e18 | decimal `string` (scale-aware parse) |
+| signed decimal strings (pnl, funding, sizes) | decimal `string` + explicit enum where sign was semantic |
 | µs timestamps | `Ts` (÷1000); µs kept in `ext` where needed |
 | `buys`/`sells` price-keyed maps `{volume, minimum_expiry}` | re-sorted `BookLevel[]`, `minExpiry` populated → `bookFeed: 'pollSnapshot'` |
 | no public tape | `Trade{synthetic: true}` from batch clearing price; `publicTape: false` |
@@ -286,4 +288,4 @@ interface MarketExt {} interface OrderExt {} interface TriggerExt {}
 - Grouping conserves total size per side.
 - `Order.filled ≤ Order.size`; `status: filled ⇔ filled = size`.
 - Fill application is idempotent by `Fill.id`.
-- All `Dec` fields round-trip `format → parse` losslessly at market precision.
+- All price/size fields round-trip `format → parse` losslessly at market precision.
