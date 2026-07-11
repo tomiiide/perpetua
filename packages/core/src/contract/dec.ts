@@ -1,8 +1,8 @@
 /**
- * Opaque decimal. Backed by scaled bigint or big.js — implementation decision
- * deferred to M0's BookEngine bench (CORE_SPEC.md §12). Never a float.
+ * Prices and sizes cross the public boundary as decimal `string` (wire-native,
+ * exact, JSON/state-safe). Exact arithmetic is internal-only (`../decimal`,
+ * scaled-bigint); no float ever touches a price or size (CORE_SPEC.md §3, G3).
  */
-export type Dec = { readonly __brand: "Dec" };
 
 /** Milliseconds. Venue implementations downscale wire formats (e.g. pod's µs). */
 export type Ts = number;

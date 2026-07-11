@@ -1,4 +1,4 @@
-import type { Dec, MarketId, PositionSide, Side, Ts } from "./dec.js";
+import type { MarketId, PositionSide, Side, Ts } from "./dec.js";
 
 // ───────────────────────────── capabilities ─────────────────────────────
 
@@ -51,12 +51,12 @@ export interface Market {
   base: string;
   quote: string;
   type: "perp" | "spot";
-  tickSize: Dec;
-  lotSize: Dec;
-  minNotional: Dec | null;
+  tickSize: string;
+  lotSize: string;
+  minNotional: string | null;
   maxLeverage: number | null;
-  makerFee: Dec;
-  takerFee: Dec;
+  makerFee: string;
+  takerFee: string;
   ext?: MarketExt;
 }
 
@@ -71,17 +71,17 @@ export interface MarketList {
 // ───────────────────────────── order book ─────────────────────────────
 
 export interface BookLevel {
-  price: Dec;
-  size: Dec;
+  price: string;
+  size: string;
   orderCount: number | null;
   minExpiry: Ts | null;
 }
 
 /** Engine OUTPUT: which rendered levels changed, for flash animations. */
-export type LevelFlash = { price: Dec; side: Side; dir: "up" | "down" | "new" | "gone" };
+export type LevelFlash = { price: string; side: Side; dir: "up" | "down" | "new" | "gone" };
 
 /** Venue INPUT: a raw level mutation on the wire. size 0 = remove level. */
-export type LevelDelta = { side: Side; price: Dec; size: Dec };
+export type LevelDelta = { side: Side; price: string; size: string };
 
 /** Venue → engine events. The engine, not the venue, owns ordering/gap logic. */
 export type BookEvent =
@@ -92,16 +92,16 @@ export interface BookState {
   marketId: MarketId;
   bids: BookLevel[];
   asks: BookLevel[];
-  mid: Dec | null;
-  spread: Dec | null;
+  mid: string | null;
+  spread: string | null;
   spreadPct: number | null;
   imbalance: number | null;
-  grouping: Dec;
+  grouping: string;
   status: "connecting" | "live" | "stale" | "resyncing" | "error";
   ts: Ts;
   changes: LevelFlash[];
   /** batch-auction venues only (null on continuous). */
-  clearingPrice: Dec | null;
+  clearingPrice: string | null;
   nextAuctionIn: number | null;
 }
 
@@ -110,8 +110,8 @@ export interface BookState {
 export interface Trade {
   id: string;
   marketId: MarketId;
-  price: Dec;
-  size: Dec;
+  price: string;
+  size: string;
   side: Side | null;
   ts: Ts;
   synthetic: boolean;
@@ -119,41 +119,41 @@ export interface Trade {
 
 export interface Candle {
   ts: Ts;
-  open: Dec;
-  high: Dec;
-  low: Dec;
-  close: Dec;
-  volume: Dec;
+  open: string;
+  high: string;
+  low: string;
+  close: string;
+  volume: string;
   closed: boolean;
 }
 
 // ───────────────────────────── pricing / funding ─────────────────────────────
 
 export interface Prices {
-  mark: Dec | null;
-  index: Dec | null;
-  oracle: Dec | null;
+  mark: string | null;
+  index: string | null;
+  oracle: string | null;
   ts: Ts;
   stale: boolean;
 }
 
 export interface Funding {
   /** Normalized sign: POSITIVE = longs pay shorts, on all venues. */
-  rate: Dec;
-  predicted: Dec | null;
+  rate: string;
+  predicted: string | null;
   nextAt: Ts | null;
-  indexCum: Dec | null;
+  indexCum: string | null;
   intervalUs: number | null;
   ts: Ts;
 }
 
 export interface MarketStats {
-  vol24h: Dec;
-  high24h: Dec;
-  low24h: Dec;
+  vol24h: string;
+  high24h: string;
+  low24h: string;
   change24hPct: number;
-  openInterest: Dec | null;
-  lastPrice: Dec;
+  openInterest: string | null;
+  lastPrice: string;
   ts: Ts;
 }
 
@@ -177,10 +177,10 @@ export interface Order {
   side: Side;
   type: OrderType;
   status: OrderStatus;
-  price: Dec | null;
-  size: Dec;
-  filled: Dec;
-  avgFillPrice: Dec | null;
+  price: string | null;
+  size: string;
+  filled: string;
+  avgFillPrice: string | null;
   tif: Tif;
   reduceOnly: boolean;
   origin: "user" | "engine";
@@ -195,9 +195,9 @@ export interface Fill {
   orderId: string;
   marketId: MarketId;
   side: Side;
-  price: Dec;
-  size: Dec;
-  fee: Dec | null;
+  price: string;
+  size: string;
+  fee: string | null;
   ts: Ts;
 }
 
@@ -205,8 +205,8 @@ export interface OrderRequest {
   marketId: MarketId;
   side: Side;
   type: OrderType;
-  price?: Dec;
-  size: Dec;
+  price?: string;
+  size: string;
   tif: Tif;
   reduceOnly: boolean;
   clientId?: string;
@@ -221,9 +221,9 @@ export interface OrderAck {
 export interface TriggerRequest {
   marketId: MarketId;
   type: "takeProfit" | "stopLoss";
-  triggerPrice: Dec;
-  limitPrice: Dec | null;
-  size: Dec;
+  triggerPrice: string;
+  limitPrice: string | null;
+  size: string;
   side: Side;
   reduceOnly: boolean;
 }
@@ -232,9 +232,9 @@ export interface Trigger {
   id: string;
   marketId: MarketId;
   type: "takeProfit" | "stopLoss";
-  triggerPrice: Dec;
-  limitPrice: Dec | null;
-  size: Dec;
+  triggerPrice: string;
+  limitPrice: string | null;
+  size: string;
   side: Side;
   reduceOnly: boolean;
   ext?: TriggerExt;
@@ -248,51 +248,51 @@ export interface PerpPosition {
   kind: "perp";
   marketId: MarketId;
   side: PositionSide;
-  size: Dec;
-  notional: Dec;
-  entryPrice: Dec;
-  markPrice: Dec;
-  liqPrice: Dec | null;
-  margin: Dec;
+  size: string;
+  notional: string;
+  entryPrice: string;
+  markPrice: string;
+  liqPrice: string | null;
+  margin: string;
   leverage: number;
   marginMode: "cross" | "isolated" | null;
-  uPnl: Dec;
-  rPnl: Dec;
+  uPnl: string;
+  rPnl: string;
   roe: number;
-  fundingAccrued: Dec | null;
-  tpsl: { tp: Dec | null; sl: Dec | null };
+  fundingAccrued: string | null;
+  tpsl: { tp: string | null; sl: string | null };
 }
 
 export interface SpotHolding {
   kind: "spot";
   marketId: MarketId;
-  balance: Dec;
-  free: Dec;
-  locked: Dec;
-  costBasis: Dec | null;
-  markPrice: Dec;
-  uPnl: Dec | null;
-  rPnl: Dec | null;
+  balance: string;
+  free: string;
+  locked: string;
+  costBasis: string | null;
+  markPrice: string;
+  uPnl: string | null;
+  rPnl: string | null;
 }
 
 export interface AccountSnapshot {
   positions: Position[];
-  equity: Dec;
-  cash: Dec | null;
-  withdrawable: Dec;
-  totalUPnl: Dec;
-  totalRPnl: Dec;
-  marginUsed: Dec;
-  maintenanceMargin: Dec;
+  equity: string;
+  cash: string | null;
+  withdrawable: string;
+  totalUPnl: string;
+  totalRPnl: string;
+  marginUsed: string;
+  maintenanceMargin: string;
   health: { ratio: number; band: "safe" | "warn" | "danger" };
   ts: Ts;
 }
 
 export interface Balance {
   asset: string;
-  total: Dec;
-  free: Dec;
-  locked: Dec;
+  total: string;
+  free: string;
+  locked: string;
 }
 
 // ───────────────────────────── pagination ─────────────────────────────
