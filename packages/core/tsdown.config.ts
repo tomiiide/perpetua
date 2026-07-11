@@ -1,4 +1,4 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
   entry: {
@@ -8,13 +8,10 @@ export default defineConfig({
     "math/index": "src/math/index.ts",
     "format/index": "src/format/index.ts",
     "contract/index": "src/contract/index.ts",
-    "decimal/index": "src/decimal/index.ts",
     "testing/index": "src/testing/index.ts",
   },
   format: ["esm"],
-  dts: true,
-  sourcemap: true,
-  clean: true,
-  splitting: true,
-  treeshake: true,
+  fixedExtension: false,
+  dts: { sourcemap: false },
+  sourcemap: false,
 });

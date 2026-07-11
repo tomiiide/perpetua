@@ -1,13 +1,11 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
   entry: {
     "hyperliquid/index": "src/hyperliquid/index.ts",
   },
   format: ["esm"],
-  dts: true,
+  fixedExtension: false,
+  dts: { sourcemap: true },
   sourcemap: true,
-  clean: true,
-  splitting: true,
-  treeshake: true,
 });
