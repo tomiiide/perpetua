@@ -1,7 +1,6 @@
-import type { Dec } from "../contract/index.js";
-import { dec, decMul, decSub, ONE } from "../decimal/index.js";
+import { dec, decMul, decSub, decToString, ONE } from "../decimal/index.js";
 
 /** Swap-side math for later verticals (SPEC.md §Layer 0 Math). */
-export function minReceived(quotedOut: Dec, slippagePct: number): Dec {
-  return decMul(quotedOut, decSub(ONE, dec(slippagePct / 100)));
+export function minReceived(quotedOut: string, slippagePct: number): string {
+  return decToString(decMul(dec(quotedOut), decSub(ONE, dec(slippagePct / 100))));
 }

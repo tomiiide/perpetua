@@ -1,16 +1,15 @@
-import type { Dec } from "../contract/index.js";
-import { decToFixed } from "../decimal/index.js";
+import { dec, decToFixed } from "../decimal/index.js";
 import type { FormattedParts } from "./types.js";
 
 /** Shared by every formatter: fixes `v` to `dp` places, splits sign/int/frac, groups `int` per locale. */
 export function splitParts(
-  v: Dec,
+  v: string,
   dp: number,
   unit: string,
   forceSign: "" | "+",
   locale = "en-US",
 ): FormattedParts {
-  const fixed = decToFixed(v, dp);
+  const fixed = decToFixed(dec(v), dp);
   const negative = fixed.startsWith("-");
   const unsigned = negative ? fixed.slice(1) : fixed;
   const [intRaw, frac = ""] = unsigned.split(".");

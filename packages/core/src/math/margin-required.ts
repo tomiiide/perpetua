@@ -1,12 +1,10 @@
-import type { Dec } from "../contract/index.js";
-import { dec, decDiv } from "../decimal/index.js";
+import { dec, decDiv, decToString } from "../decimal/index.js";
 
 export interface MarginRequiredParams {
-  notional: Dec;
+  notional: string;
   leverage: number;
 }
 
-export function marginRequired(params: MarginRequiredParams): Dec {
-  const { notional, leverage } = params;
-  return decDiv(notional, dec(leverage));
+export function marginRequired(params: MarginRequiredParams): string {
+  return decToString(decDiv(dec(params.notional), dec(params.leverage)));
 }

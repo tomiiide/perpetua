@@ -1,20 +1,23 @@
-import type { Dec, PositionSide } from "../contract/index.js";
+import type { PositionSide } from "../contract/index.js";
 import {
+  dec,
   decAdd,
   decDiv,
   decIsPositive,
   decIsZero,
   decMul,
   decSub,
+  decToString,
   ONE,
+  type Dec,
 } from "../decimal/index.js";
 
 export interface LiqPriceParams {
   side: PositionSide;
-  entryPrice: Dec;
-  size: Dec;
-  margin: Dec;
-  maintenanceMarginRate: Dec;
+  entryPrice: string;
+  size: string;
+  margin: string;
+  maintenanceMarginRate: string;
 }
 
 /**
@@ -23,22 +26,27 @@ export interface LiqPriceParams {
  * scales with current notional. Ignores funding/fees (venue-specific;
  * exact parity is a venue concern, not core's).
  */
-export function liqPrice(params: LiqPriceParams): Dec | null {
-  const { side, entryPrice, size, margin, maintenanceMarginRate } = params;
+export function liqPrice(params: LiqPriceParams): string | null {
+  const { side } = params;
+  const size = dec(params.size);
   if (decIsZero(size)) return null;
+
+  const entryPrice = dec(params.entryPrice);
+  const margin = dec(params.margin);
+  const mmr = dec(params.maintenanceMarginRate);
 
   const notional = decMul(entryPrice, size);
   let price: Dec;
   if (side === "long") {
     // P = (entry*size - margin) / (size*(1 - mmr))
-    const denom = decMul(size, decSub(ONE, maintenanceMarginRate));
+    const denom = decMul(size, decSub(ONE, mmr));
     if (!decIsPositive(denom)) return null; // mmr >= 100%, position can't be margined
     price = decDiv(decSub(notional, margin), denom);
   } else {
     // P = (margin + entry*size) / (size*(1 + mmr))
-    const denom = decMul(size, decAdd(ONE, maintenanceMarginRate));
+    const denom = decMul(size, decAdd(ONE, mmr));
     price = decDiv(decAdd(margin, notional), denom);
   }
 
-  return decIsPositive(price) ? price : null;
+  return decIsPositive(price) ? decToString(price) : null;
 }

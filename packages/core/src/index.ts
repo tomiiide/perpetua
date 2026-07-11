@@ -3,4 +3,3 @@ export * from "./actions/index.js";
 export * from "./math/index.js";
 export * from "./format/index.js";
 export * from "./contract/index.js";
-export * from "./decimal/index.js";
