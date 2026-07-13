@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import type { ComponentPropsWithoutRef } from "react";
 import type { Dec, FormattedParts } from "@perpetua/core";
-import { decIsNegative, decIsPositive, formatDelta } from "@perpetua/core";
+import { decIsNegative, decIsPositive, decToString, formatDelta } from "@perpetua/core";
 
 export interface DeltaProps extends Omit<ComponentPropsWithoutRef<"span">, "children"> {
   value: Dec;
@@ -12,7 +12,7 @@ export const Delta = forwardRef<HTMLSpanElement, DeltaProps>(function Delta(
   { value, locale, ...rest },
   ref,
 ) {
-  const parts: FormattedParts = formatDelta(value, locale);
+  const parts: FormattedParts = formatDelta(decToString(value), locale);
   const state: "up" | "down" | "flat" = decIsPositive(value)
     ? "up"
     : decIsNegative(value)

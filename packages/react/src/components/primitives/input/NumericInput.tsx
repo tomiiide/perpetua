@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import type { ChangeEvent, ComponentPropsWithoutRef, FocusEvent, KeyboardEvent } from "react";
 import type { Dec, RoundMode } from "@perpetua/core";
-import { ZERO, dec, decAdd, decGt, decLt, decSub, decToString, tickRound } from "@perpetua/core";
+import { ZERO, dec, decAdd, decGt, decLt, decRoundToStep, decSub, decToString } from "@perpetua/core";
 
 function sanitize(raw: string, allowNegative: boolean): string {
   let result = "";
@@ -60,7 +60,7 @@ export const NumericInput = forwardRef<HTMLInputElement, NumericInputProps>(func
 ) {
   const clamp = (v: Dec): Dec => {
     let result = v;
-    if (roundStep) result = tickRound(result, { tickSize: roundStep }, roundMode);
+    if (roundStep) result = decRoundToStep(result, roundStep, roundMode);
     if (min && decLt(result, min)) result = min;
     if (max && decGt(result, max)) result = max;
     return result;
