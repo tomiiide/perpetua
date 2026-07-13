@@ -127,6 +127,26 @@ export function decGte(a: Dec, b: Dec): boolean {
   return decCmp(a, b) >= 0;
 }
 
+export function decLte(a: Dec, b: Dec): boolean {
+  return decCmp(a, b) <= 0;
+}
+
+export function decGt(a: Dec, b: Dec): boolean {
+  return decCmp(a, b) > 0;
+}
+
+export function decLt(a: Dec, b: Dec): boolean {
+  return decCmp(a, b) < 0;
+}
+
+export function decMax(a: Dec, b: Dec): Dec {
+  return decCmp(a, b) >= 0 ? a : b;
+}
+
+export function decMin(a: Dec, b: Dec): Dec {
+  return decCmp(a, b) <= 0 ? a : b;
+}
+
 export function decIsZero(a: Dec): boolean {
   return unwrap(a).v === 0n;
 }

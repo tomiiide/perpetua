@@ -1,3 +1,4 @@
+export * from "./decimal/index.js";
 export * from "./client/index.js";
 export * from "./actions/index.js";
 export * from "./math/index.js";
