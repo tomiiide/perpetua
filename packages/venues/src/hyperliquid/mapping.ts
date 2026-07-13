@@ -5,6 +5,7 @@ import {
   decMul,
   decSub,
   decToNumber,
+  decToString,
   type BookEvent,
   type BookLevel,
   type Candle,
@@ -61,19 +62,19 @@ export function mapMarket(asset: HlUniverseAsset, ctx: HlAssetCtx | undefined): 
     base: coin,
     quote: "USD",
     type: "perp",
-    tickSize: deriveTickSize(asset.szDecimals),
-    lotSize: deriveLotSize(asset.szDecimals),
-    minNotional: MIN_NOTIONAL,
+    tickSize: decToString(deriveTickSize(asset.szDecimals)),
+    lotSize: decToString(deriveLotSize(asset.szDecimals)),
+    minNotional: decToString(MIN_NOTIONAL),
     maxLeverage: asset.maxLeverage,
-    makerFee: BASE_MAKER_FEE,
-    takerFee: BASE_TAKER_FEE,
+    makerFee: decToString(BASE_MAKER_FEE),
+    takerFee: decToString(BASE_TAKER_FEE),
   };
 }
 
 export function mapBookLevel(level: HlBookLevel): BookLevel {
   return {
-    price: dec(level.px),
-    size: dec(level.sz),
+    price: decToString(dec(level.px)),
+    size: decToString(dec(level.sz)),
     orderCount: level.n,
     minExpiry: null,
   };
@@ -94,8 +95,8 @@ export function mapTrade(trade: HlWsTrade): Trade {
   return {
     id: String(trade.tid),
     marketId: toMarketId(trade.coin),
-    price: dec(trade.px),
-    size: dec(trade.sz),
+    price: decToString(dec(trade.px)),
+    size: decToString(dec(trade.sz)),
     side: trade.side === "B" ? "buy" : "sell",
     ts: trade.time,
     synthetic: false,
@@ -105,11 +106,11 @@ export function mapTrade(trade: HlWsTrade): Trade {
 export function mapCandle(candle: HlCandle): Candle {
   return {
     ts: candle.t,
-    open: dec(candle.o),
-    high: dec(candle.h),
-    low: dec(candle.l),
-    close: dec(candle.c),
-    volume: dec(candle.v),
+    open: decToString(dec(candle.o)),
+    high: decToString(dec(candle.h)),
+    low: decToString(dec(candle.l)),
+    close: decToString(dec(candle.c)),
+    volume: decToString(dec(candle.v)),
     closed: candle.T <= Date.now(),
   };
 }
@@ -122,9 +123,9 @@ export function mapCandle(candle: HlCandle): Candle {
  */
 export function mapPrices(ctx: HlAssetCtx, ts: number): Prices {
   return {
-    mark: dec(ctx.markPx),
+    mark: decToString(dec(ctx.markPx)),
     index: null,
-    oracle: dec(ctx.oraclePx),
+    oracle: decToString(dec(ctx.oraclePx)),
     ts,
     stale: false,
   };

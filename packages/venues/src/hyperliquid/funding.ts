@@ -1,4 +1,4 @@
-import { dec, type Dec, type EventSink, type Funding, type MarketId, type Unsubscribe } from "@perpetua/core";
+import { dec, decToString, type Dec, type EventSink, type Funding, type MarketId, type Unsubscribe } from "@perpetua/core";
 import type { InfoClient } from "./info-client.js";
 import { coinFromMarketId } from "./mapping.js";
 import type { HlActiveAssetCtx, HlPredictedFundings } from "./types.js";
@@ -58,8 +58,8 @@ export function subscribeFunding(
     const { ctx } = data as HlActiveAssetCtx;
     const ts = Date.now();
     const funding: Funding = {
-      rate: dec(ctx.funding),
-      predicted: predicted.rate,
+      rate: decToString(dec(ctx.funding)),
+      predicted: predicted.rate === null ? null : decToString(predicted.rate),
       nextAt: predicted.nextAt ?? nextFundingBoundary(ts),
       indexCum: null,
       intervalUs: HL_FUNDING_INTERVAL_US,

@@ -2,6 +2,7 @@ import {
   dec,
   decMax,
   decMin,
+  decToString,
   type Dec,
   type EventSink,
   type MarketId,
@@ -64,12 +65,12 @@ export function subscribeStats(
     const ts = Date.now();
     const lastPrice = dec(ctx.markPx);
     const stats: MarketStats = {
-      vol24h: dec(ctx.dayNtlVlm),
-      high24h: highLow.high ?? lastPrice,
-      low24h: highLow.low ?? lastPrice,
+      vol24h: decToString(dec(ctx.dayNtlVlm)),
+      high24h: decToString(highLow.high ?? lastPrice),
+      low24h: decToString(highLow.low ?? lastPrice),
       change24hPct: change24hPct(ctx),
-      openInterest: dec(ctx.openInterest),
-      lastPrice,
+      openInterest: decToString(dec(ctx.openInterest)),
+      lastPrice: decToString(lastPrice),
       ts,
     };
     sink({ kind: "stats", stats });
