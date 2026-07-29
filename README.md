@@ -76,6 +76,13 @@ Every component styles itself only through `--pt-*` tokens and exposes state as 
 | `@perpetua/venues` | Venue adapters against the core contract. Hyperliquid market data today. MIT. |
 | `@perpetua/react` | Unstyled, accessible React primitives plus the theme layer (`tokens.css`, `tailwind.preset.cjs`, `mui-theme.ts`). MIT. |
 
+## Documentation
+
+- [Getting started](docs/getting-started.md): install, a Node order-book watcher, the React path.
+- [Writing a venue](docs/writing-a-venue.md): implement the venue contract and run the conformance suite.
+- [Theming](docs/theming.md): the `--pt-*` token contract, data-attribute state styling, Tailwind preset, MUI bridge, density axis.
+- Design material: [SPEC.md](SPEC.md) (product/architecture), [CORE_SPEC.md](CORE_SPEC.md) (core contract), [MODELS.md](MODELS.md) (canonical types), [design/STYLE_GUIDE.md](design/STYLE_GUIDE.md).
+
 ## Status
 
 Live market data is production-ready end to end (order book, trades, candles, mark/index, funding, stats). Account and write surfaces (positions, orders, fills, order placement) are defined in the contract and land per venue; the Hyperliquid adapter currently ships market data only.
