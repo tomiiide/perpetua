@@ -4,6 +4,24 @@
   "description": "Venue implementations against @perpetua/core's contract: mock, hyperliquid, pod, binance.",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomiiide/perpetua.git",
+    "directory": "packages/venues"
+  },
+  "homepage": "https://github.com/tomiiide/perpetua#readme",
+  "bugs": "https://github.com/tomiiide/perpetua/issues",
+  "keywords": [
+    "perpetuals",
+    "trading",
+    "perps",
+    "hyperliquid",
+    "defi",
+    "typescript"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": false,
   "files": [
     "dist"

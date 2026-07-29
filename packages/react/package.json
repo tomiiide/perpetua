@@ -4,6 +4,26 @@
   "description": "React bindings: /hooks (thin wrappers over desk actions) and /components (unstyled primitives + connected widgets).",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomiiide/perpetua.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/tomiiide/perpetua#readme",
+  "bugs": "https://github.com/tomiiide/perpetua/issues",
+  "keywords": [
+    "perpetuals",
+    "trading",
+    "perps",
+    "react",
+    "components",
+    "hooks",
+    "defi",
+    "typescript"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": false,
   "files": [
     "dist",
