@@ -3,7 +3,7 @@
 This file is the project's committed home for project-intrinsic agent knowledge: build, test, release, architecture, and sharp-edge notes that should travel with the code.
 
 - Releases: changesets-driven; flow and one-time setup in RELEASING.md. Publishable packages are `@perpetua/core`, `@perpetua/venues`, `@perpetua/react`; `examples/*` stay private and are in the changesets ignore list.
-- CI: `.github/workflows/ci.yml` runs `pnpm typecheck`, `pnpm test`, `pnpm build` on PRs and pushes to main.
+- CI: `.github/workflows/ci.yml` runs `pnpm build`, `pnpm typecheck`, `pnpm test` on PRs and pushes to main (build first: workspace `exports` resolve types from `dist/`).
 
 ## Maintaining this file
 
