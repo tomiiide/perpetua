@@ -1,4 +1,4 @@
-# @perpetua/example-terminal
+# @perpkit/example-terminal
 
 A live perps terminal that dogfoods the full Perpetua stack against **Hyperliquid**: no auth, read-only market data, real mainnet feeds. It is the reference for how the three packages are meant to compose.
 
@@ -11,16 +11,16 @@ From a fresh checkout of the repo:
 ```bash
 pnpm install
 pnpm build                                     # build core, venues, react
-pnpm --filter @perpetua/example-terminal dev   # http://localhost:5173
+pnpm --filter @perpkit/example-terminal dev   # http://localhost:5173
 ```
 
-`pnpm --filter @perpetua/example-terminal build` produces a static production bundle; `... preview` serves it.
+`pnpm --filter @perpkit/example-terminal build` produces a static production bundle; `... preview` serves it.
 
 ## How each package is used
 
-- **`@perpetua/core`**: one `createClient({ venue })` shared app-wide (`src/lib/perpetua.ts`), `watchOrderBook` driving the BookEngine, raw `client.market.subscribe` for the other feeds, `fetchCandles` for chart history, `/math` helpers (`marginRequired`, `liqPrice`, `Dec` arithmetic for grouping presets) and `/format` formatters for every number on screen.
-- **`@perpetua/venues/hyperliquid`**: live REST + WebSocket market data. The venue is instantiated in exactly one place; swapping exchanges means changing one line.
-- **`@perpetua/react`**: unstyled primitives (`Num`, `Delta`, `FlashCell`, `Sparkline`, `SegmentedControl`, `StatusDot`, `DataTable`, `EmptyState`, ...) styled purely through the `--pt-*` token contract in `src/styles.css`. No literal colors outside the tokens; the theme and density toggles in the top bar just set `data-theme` / `data-density` on `<html>` (see [docs/theming.md](../../docs/theming.md)).
+- **`@perpkit/core`**: one `createClient({ venue })` shared app-wide (`src/lib/perpetua.ts`), `watchOrderBook` driving the BookEngine, raw `client.market.subscribe` for the other feeds, `fetchCandles` for chart history, `/math` helpers (`marginRequired`, `liqPrice`, `Dec` arithmetic for grouping presets) and `/format` formatters for every number on screen.
+- **`@perpkit/venues/hyperliquid`**: live REST + WebSocket market data. The venue is instantiated in exactly one place; swapping exchanges means changing one line.
+- **`@perpkit/react`**: unstyled primitives (`Num`, `Delta`, `FlashCell`, `Sparkline`, `SegmentedControl`, `StatusDot`, `DataTable`, `EmptyState`, ...) styled purely through the `--pt-*` token contract in `src/styles.css`. No literal colors outside the tokens; the theme and density toggles in the top bar just set `data-theme` / `data-density` on `<html>` (see [docs/theming.md](../../docs/theming.md)).
 
 ## What's wired
 

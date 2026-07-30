@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "@perpetua/react/theme/tokens.css";
+import "@perpkit/react/theme/tokens.css";
 import "./styles.css";
 import { App } from "./App";
 

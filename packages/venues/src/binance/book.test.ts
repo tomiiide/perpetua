@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { BookEvent, MarketId, VenueEvent } from "@perpetua/core";
+import type { BookEvent, MarketId, VenueEvent } from "@perpkit/core";
 import { fetchBookSnapshot, subscribeBook } from "./book.js";
 import { createRestClient } from "./rest-client.js";
 import { BinanceWsClient } from "./ws-client.js";

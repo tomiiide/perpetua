@@ -8,7 +8,7 @@ import {
   type MarketId,
   type Prices,
   type Trade,
-} from "@perpetua/core";
+} from "@perpkit/core";
 import type {
   BnAggTrade,
   BnDepthUpdate,

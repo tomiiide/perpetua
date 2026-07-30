@@ -1,4 +1,4 @@
-import type { Candle, EventSink, MarketId, Range, Resolution, Unsubscribe } from "@perpetua/core";
+import type { Candle, EventSink, MarketId, Range, Resolution, Unsubscribe } from "@perpkit/core";
 import type { InfoClient } from "./info-client.js";
 import { coinFromMarketId, mapCandle } from "./mapping.js";
 import type { HlCandle } from "./types.js";

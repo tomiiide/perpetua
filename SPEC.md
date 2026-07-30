@@ -8,11 +8,11 @@ Three packages, strictly layered. Each layer is usable without the one above it.
 
 | Package | Ecosystem analogue | What it is | Depends on |
 |---|---|---|---|
-| `@perpetua/core` | viem | Single-venue client, actions, engines, math, venue *contract*. No DOM, no CSS, no React. | nothing |
-| `@perpetua/venues` | @wagmi/connectors | Venue implementations: mock, hyperliquid, pod. Third parties ship their own against core's contract. | core |
-| `@perpetua/desk` | @wagmi/core | Ties N clients together: MarketId routing, merged markets/blotter, per-venue health. Framework-agnostic. | core |
-| `@perpetua/react` | wagmi | Two subpath entries: `/hooks` (1:1 wrappers over desk actions) and `/components` (unstyled primitives + connected widgets, Radix-style, data-attributes for state). Hooks usable without components; primitives usable without hooks. | desk (peer: react) |
-| `@perpetua/theme` | — | Pure CSS artifacts: design tokens, Tailwind preset, MUI bridge. Swappable for any styling system. | nothing (styles `--pt-*` vars the components reference) |
+| `@perpkit/core` | viem | Single-venue client, actions, engines, math, venue *contract*. No DOM, no CSS, no React. | nothing |
+| `@perpkit/venues` | @wagmi/connectors | Venue implementations: mock, hyperliquid, pod. Third parties ship their own against core's contract. | core |
+| `@perpkit/desk` | @wagmi/core | Ties N clients together: MarketId routing, merged markets/blotter, per-venue health. Framework-agnostic. | core |
+| `@perpkit/react` | wagmi | Two subpath entries: `/hooks` (1:1 wrappers over desk actions) and `/components` (unstyled primitives + connected widgets, Radix-style, data-attributes for state). Hooks usable without components; primitives usable without hooks. | desk (peer: react) |
+| `@perpkit/theme` | — | Pure CSS artifacts: design tokens, Tailwind preset, MUI bridge. Swappable for any styling system. | nothing (styles `--pt-*` vars the components reference) |
 
 Data enters through **venue interfaces**, never hard-coded integrations. Teams plug in their own exchange/chain venues; we ship reference venues: `mock` (deterministic, for tests), `hyperliquid` (continuous CLOB, push feeds), and `pod` (batch auction, poll feeds).
 
@@ -20,7 +20,7 @@ The venue contract (unified `subscribe(sub, sink)`, capability flags, normalized
 
 ---
 
-## Layer 0 — Headless core (`@perpetua/core`)
+## Layer 0 — Headless core (`@perpkit/core`)
 
 The defensible layer. All numeric logic is decimal-safe (no float math on prices/sizes).
 
@@ -77,7 +77,7 @@ Two sub-layers, mirroring viem (transport + actions) and wagmi (React hooks):
 
 ---
 
-## Layer 1 — Base primitives (`@perpetua/react/components` → primitives)
+## Layer 1 — Base primitives (`@perpkit/react/components` → primitives)
 
 Generic, unstyled, accessible. Everything below is keyboard-navigable and exposes state via `data-*` attributes for styling.
 

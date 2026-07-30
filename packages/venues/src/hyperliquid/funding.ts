@@ -1,4 +1,4 @@
-import { dec, decToString, type Dec, type EventSink, type Funding, type MarketId, type Unsubscribe } from "@perpetua/core";
+import { dec, decToString, type Dec, type EventSink, type Funding, type MarketId, type Unsubscribe } from "@perpkit/core";
 import type { InfoClient } from "./info-client.js";
 import { coinFromMarketId } from "./mapping.js";
 import type { HlActiveAssetCtx, HlPredictedFundings } from "./types.js";

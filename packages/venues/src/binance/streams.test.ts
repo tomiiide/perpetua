@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { MarketId, VenueEvent } from "@perpetua/core";
+import type { MarketId, VenueEvent } from "@perpkit/core";
 import { binance } from "./index.js";
 import { createFakeNet, settle, type FakeNet } from "./testing/fake-net.js";
 import { AGG_TRADE, FORCE_ORDER, klineRows, MARK_PRICE, T0, TICKER_24H, WS_KLINE } from "./testing/fixtures.js";

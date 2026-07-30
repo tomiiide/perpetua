@@ -1,5 +1,5 @@
 {
-  "name": "@perpetua/core",
+  "name": "@perpkit/core",
   "version": "0.0.0",
   "description": "Headless perp trading client: transport, actions, engines, decimal math, venue contract. No DOM, no CSS, no React.",
   "type": "module",

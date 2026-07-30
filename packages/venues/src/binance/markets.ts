@@ -1,4 +1,4 @@
-import type { Market } from "@perpetua/core";
+import type { Market } from "@perpkit/core";
 import { mapMarket } from "./mapping.js";
 import type { RestClient } from "./rest-client.js";
 import type { BnExchangeInfo } from "./types.js";

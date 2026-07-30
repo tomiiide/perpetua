@@ -1,4 +1,4 @@
-import type { EventSink, MarketDataVenue, Subscription, Unsubscribe, Venue } from "@perpetua/core";
+import type { EventSink, MarketDataVenue, Subscription, Unsubscribe, Venue } from "@perpkit/core";
 import { fetchBookSnapshot, subscribeBook } from "./book.js";
 import { binanceCapabilities } from "./capabilities.js";
 import { fetchCandles, subscribeCandle } from "./candles.js";

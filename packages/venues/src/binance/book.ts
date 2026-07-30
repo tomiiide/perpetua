@@ -1,4 +1,4 @@
-import type { BookEvent, EventSink, MarketId, Unsubscribe } from "@perpetua/core";
+import type { BookEvent, EventSink, MarketId, Unsubscribe } from "@perpkit/core";
 import { mapBookLevel, mapDepthDeltas, streamName, symbolFromMarketId } from "./mapping.js";
 import type { RestClient } from "./rest-client.js";
 import type { BnDepthSnapshot, BnDepthUpdate } from "./types.js";

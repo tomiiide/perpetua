@@ -31,7 +31,7 @@ export interface Capabilities {
 /**
  * Venues extend these via declaration merging — typed, tree-shaken, never `any`:
  *
- *   declare module '@perpetua/core' {
+ *   declare module '@perpkit/core' {
  *     interface MarketExt { pod?: { auctionIntervalUs: number; baseTokenAddress: string } }
  *     interface OrderExt  { pod?: { direction: PodDirection; nonce: number } }
  *   }

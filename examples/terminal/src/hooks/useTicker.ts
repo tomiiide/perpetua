@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Funding, MarketId, MarketStats, Prices } from "@perpetua/core";
+import type { Funding, MarketId, MarketStats, Prices } from "@perpkit/core";
 import { client } from "../lib/perpetua";
 
 export interface Ticker {

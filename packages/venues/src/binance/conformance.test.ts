@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { runConformance } from "@perpetua/core/testing";
+import { runConformance } from "@perpkit/core/testing";
 import { binance } from "./index.js";
 import { createFakeNet } from "./testing/fake-net.js";
 import {

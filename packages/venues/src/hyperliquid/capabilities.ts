@@ -1,4 +1,4 @@
-import type { Capabilities, Resolution } from "@perpetua/core";
+import type { Capabilities, Resolution } from "@perpkit/core";
 
 /** HL's `3d` candle interval has no home in the canonical `Resolution` union, so it's dropped. */
 export const HL_CANDLE_RESOLUTIONS: Resolution[] = [

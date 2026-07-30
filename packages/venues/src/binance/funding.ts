@@ -1,4 +1,4 @@
-import { dec, decToString, type EventSink, type Funding, type MarketId, type Unsubscribe } from "@perpetua/core";
+import { dec, decToString, type EventSink, type Funding, type MarketId, type Unsubscribe } from "@perpkit/core";
 import { streamName, symbolFromMarketId } from "./mapping.js";
 import type { RestClient } from "./rest-client.js";
 import type { BnFundingInfoEntry, BnMarkPriceUpdate } from "./types.js";

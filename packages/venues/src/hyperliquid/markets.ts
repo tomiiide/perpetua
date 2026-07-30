@@ -1,4 +1,4 @@
-import type { Market } from "@perpetua/core";
+import type { Market } from "@perpkit/core";
 import type { InfoClient } from "./info-client.js";
 import { mapMarket } from "./mapping.js";
 import type { HlMetaAndAssetCtxs } from "./types.js";

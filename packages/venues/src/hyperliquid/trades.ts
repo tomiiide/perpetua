@@ -1,4 +1,4 @@
-import type { EventSink, MarketId, Unsubscribe } from "@perpetua/core";
+import type { EventSink, MarketId, Unsubscribe } from "@perpkit/core";
 import { coinFromMarketId, mapTrade } from "./mapping.js";
 import type { HlWsTrade } from "./types.js";
 import type { HlWsClient } from "./ws-client.js";

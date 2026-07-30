@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import type { ComponentPropsWithoutRef } from "react";
-import type { Dec, FormattedParts } from "@perpetua/core";
-import { decIsNegative, decIsPositive, decToString, formatDelta } from "@perpetua/core";
+import type { Dec, FormattedParts } from "@perpkit/core";
+import { decIsNegative, decIsPositive, decToString, formatDelta } from "@perpkit/core";
 
 export interface DeltaProps extends Omit<ComponentPropsWithoutRef<"span">, "children"> {
   value: Dec;

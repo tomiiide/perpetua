@@ -8,7 +8,7 @@ import {
   type MarketId,
   type MarketStats,
   type Unsubscribe,
-} from "@perpetua/core";
+} from "@perpkit/core";
 import type { InfoClient } from "./info-client.js";
 import { change24hPct, coinFromMarketId } from "./mapping.js";
 import type { HlActiveAssetCtx, HlCandle } from "./types.js";

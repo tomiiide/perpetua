@@ -259,7 +259,7 @@ footer { border-top:var(--pt-hairline); }
     <p class="hero-sub">Decimal-safe trading engines, venue-agnostic data feeds, and Radix-style primitives for perps, swap, and prediction markets. No float math. One commit per frame.</p>
     <div class="cmd">
       <span class="dollar">$</span>
-      <span class="cmd-text">npm i @perpetua/core @perpetua/react</span>
+      <span class="cmd-text">npm i @perpkit/core @perpkit/react</span>
       <button class="copy" id="copyBtn" title="Copy">⧉</button>
     </div>
     <div class="cta-row">
@@ -382,7 +382,7 @@ document.getElementById('themeToggle').addEventListener('click', () => {
 
 /* ===== Copy command ===== */
 document.getElementById('copyBtn').addEventListener('click', () => {
-  navigator.clipboard && navigator.clipboard.writeText('npm i @perpetua/core @perpetua/react');
+  navigator.clipboard && navigator.clipboard.writeText('npm i @perpkit/core @perpkit/react');
   const b = document.getElementById('copyBtn');
   const prev = b.textContent; b.textContent = '✓'; b.style.color = 'var(--pt-accent)';
   setTimeout(() => { b.textContent = prev; b.style.color = ''; }, 1000);
@@ -390,11 +390,11 @@ document.getElementById('copyBtn').addEventListener('click', () => {
 
 /* ===== Static section content ===== */
 const packages = [
-  { name:'@perpetua/core', analogue:'viem', desc:'Single-venue client, actions, engines, decimal math, the venue contract. No DOM, no CSS, no React.', deps:'nothing' },
-  { name:'@perpetua/venues', analogue:'@wagmi/connectors', desc:'Venue implementations: mock, hyperliquid, pod. Third parties ship their own against the contract.', deps:'core' },
-  { name:'@perpetua/desk', analogue:'@wagmi/core', desc:'Ties N clients together: MarketId routing, merged markets and blotter, per-venue health.', deps:'core' },
-  { name:'@perpetua/react', analogue:'wagmi', desc:'Hooks 1:1 over desk actions, plus unstyled primitives and connected widgets. Data-attributes for state.', deps:'desk · peer: react' },
-  { name:'@perpetua/theme', analogue:'n/a', desc:'Pure CSS artifacts: design tokens, Tailwind preset, MUI bridge. Swappable for any styling system.', deps:'nothing' },
+  { name:'@perpkit/core', analogue:'viem', desc:'Single-venue client, actions, engines, decimal math, the venue contract. No DOM, no CSS, no React.', deps:'nothing' },
+  { name:'@perpkit/venues', analogue:'@wagmi/connectors', desc:'Venue implementations: mock, hyperliquid, pod. Third parties ship their own against the contract.', deps:'core' },
+  { name:'@perpkit/desk', analogue:'@wagmi/core', desc:'Ties N clients together: MarketId routing, merged markets and blotter, per-venue health.', deps:'core' },
+  { name:'@perpkit/react', analogue:'wagmi', desc:'Hooks 1:1 over desk actions, plus unstyled primitives and connected widgets. Data-attributes for state.', deps:'desk · peer: react' },
+  { name:'@perpkit/theme', analogue:'n/a', desc:'Pure CSS artifacts: design tokens, Tailwind preset, MUI bridge. Swappable for any styling system.', deps:'nothing' },
 ];
 document.getElementById('pkgTable').innerHTML = packages.map(p => `
   <div class="pkg-row">

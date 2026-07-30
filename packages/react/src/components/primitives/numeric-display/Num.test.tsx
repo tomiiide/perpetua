@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { formatPrice } from "@perpetua/core";
-import type { FormattedParts } from "@perpetua/core";
+import { formatPrice } from "@perpkit/core";
+import type { FormattedParts } from "@perpkit/core";
 import { Num as ExportedNum } from "../../index.js";
 import { Num } from "./Num.js";
 

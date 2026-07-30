@@ -1,7 +1,7 @@
 {
-  "name": "@perpetua/venues",
+  "name": "@perpkit/venues",
   "version": "0.0.0",
-  "description": "Venue implementations against @perpetua/core's contract: mock, hyperliquid, pod, binance.",
+  "description": "Venue implementations against @perpkit/core's contract: mock, hyperliquid, pod, binance.",
   "type": "module",
   "license": "MIT",
   "repository": {
@@ -43,7 +43,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@perpetua/core": "workspace:*"
+    "@perpkit/core": "workspace:*"
   },
   "devDependencies": {
     "tsdown": "^0.22.4",

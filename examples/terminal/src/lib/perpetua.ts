@@ -1,5 +1,5 @@
-import { createClient } from "@perpetua/core";
-import { hyperliquid } from "@perpetua/venues/hyperliquid";
+import { createClient } from "@perpkit/core";
+import { hyperliquid } from "@perpkit/venues/hyperliquid";
 
 /** One venue, one client — shared across the app (CORE_SPEC.md §5.1). */
 const venue = hyperliquid();

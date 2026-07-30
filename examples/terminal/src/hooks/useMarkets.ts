@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Market } from "@perpetua/core";
+import type { Market } from "@perpkit/core";
 import { client } from "../lib/perpetua";
 
 export function useMarkets(): Market[] {

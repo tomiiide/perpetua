@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import type { ChangeEvent, ComponentPropsWithoutRef, FocusEvent, KeyboardEvent } from "react";
-import type { Dec, RoundMode } from "@perpetua/core";
-import { ZERO, dec, decAdd, decGt, decLt, decRoundToStep, decSub, decToString } from "@perpetua/core";
+import type { Dec, RoundMode } from "@perpkit/core";
+import { ZERO, dec, decAdd, decGt, decLt, decRoundToStep, decSub, decToString } from "@perpkit/core";
 
 function sanitize(raw: string, allowNegative: boolean): string {
   let result = "";

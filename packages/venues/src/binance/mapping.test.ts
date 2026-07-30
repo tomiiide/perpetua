@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { MarketId } from "@perpetua/core";
+import type { MarketId } from "@perpkit/core";
 import {
   mapAggTrade,
   mapBookLevel,

@@ -1,5 +1,5 @@
 {
-  "name": "@perpetua/react",
+  "name": "@perpkit/react",
   "version": "0.0.0",
   "description": "React bindings: /hooks (thin wrappers over desk actions) and /components (unstyled primitives + connected widgets).",
   "type": "module",
@@ -59,7 +59,7 @@
     }
   },
   "dependencies": {
-    "@perpetua/core": "workspace:*",
+    "@perpkit/core": "workspace:*",
     "@radix-ui/react-accordion": "^1.2.16",
     "@radix-ui/react-checkbox": "^1.3.7",
     "@radix-ui/react-context-menu": "^2.3.3",

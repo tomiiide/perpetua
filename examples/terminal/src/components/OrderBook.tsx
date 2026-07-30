@@ -1,6 +1,6 @@
-import type { BookLevel, BookState, Market, Side } from "@perpetua/core";
-import { formatPrice, formatSize } from "@perpetua/core";
-import { FlashCell, Num, SegmentedControl, StatusDot } from "@perpetua/react/components";
+import type { BookLevel, BookState, Market, Side } from "@perpkit/core";
+import { formatPrice, formatSize } from "@perpkit/core";
+import { FlashCell, Num, SegmentedControl, StatusDot } from "@perpkit/react/components";
 import { numericCompare } from "../lib/format";
 
 export interface OrderBookProps {

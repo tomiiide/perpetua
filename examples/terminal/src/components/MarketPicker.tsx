@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Market, MarketId } from "@perpetua/core";
-import { SearchInput } from "@perpetua/react/components";
+import type { Market, MarketId } from "@perpkit/core";
+import { SearchInput } from "@perpkit/react/components";
 
 export interface MarketPickerProps {
   markets: Market[];

@@ -1,6 +1,6 @@
-import type { Market, Trade } from "@perpetua/core";
-import { formatPrice, formatSize } from "@perpetua/core";
-import { Num } from "@perpetua/react/components";
+import type { Market, Trade } from "@perpkit/core";
+import { formatPrice, formatSize } from "@perpkit/core";
+import { Num } from "@perpkit/react/components";
 import { fmtTime } from "../lib/format";
 
 export interface TradesFeedProps {

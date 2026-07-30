@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import type { MarketId, Resolution } from "@perpetua/core";
-import { SegmentedControl, StatusDot } from "@perpetua/react/components";
+import type { MarketId, Resolution } from "@perpkit/core";
+import { SegmentedControl, StatusDot } from "@perpkit/react/components";
 import { capabilities } from "./lib/perpetua";
 import { groupingPresets } from "./lib/format";
 import { useMarkets } from "./hooks/useMarkets";
