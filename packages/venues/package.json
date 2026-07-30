@@ -30,6 +30,10 @@
     "./hyperliquid": {
       "types": "./dist/hyperliquid/index.d.ts",
       "import": "./dist/hyperliquid/index.js"
+    },
+    "./binance": {
+      "types": "./dist/binance/index.d.ts",
+      "import": "./dist/binance/index.js"
     }
   },
   "scripts": {
