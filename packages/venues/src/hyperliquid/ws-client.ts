@@ -112,7 +112,8 @@ export class HlWsClient {
     });
 
     ws.addEventListener("error", () => {
-      ws.close();
+      // close() on a non-OPEN socket re-fires "error" (undici) — recursion guard
+      if (ws.readyState === WebSocket.OPEN) ws.close();
     });
   }
 

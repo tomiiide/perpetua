@@ -74,6 +74,8 @@ export class BookEngine {
   private status: Status = "connecting";
   private lastTs: Ts = 0;
   private prevRendered = new Map<string, string>(); // "side:price" -> size
+  private groupTicks = 1; // cached decStepCount(grouping / tickSize); recomputed only on setGrouping
+  private readonly bucketPrices = new Map<number, string>(); // ticks -> rendered price (pure, memoized)
   private emitTimer: TimerId | null = null;
   private staleTimer: TimerId | null = null;
   private refreshTimer: TimerId | null = null;
@@ -90,6 +92,7 @@ export class BookEngine {
     };
     this.tickDec = dec(config.tickSize);
     this.lotDec = dec(config.lotSize);
+    this.groupTicks = this.computeGroupTicks();
     if (!this.cfg.hasSequence) this.armRefresh();
   }
 
@@ -103,7 +106,12 @@ export class BookEngine {
   setGrouping(grouping: string): void {
     if (grouping === this.cfg.grouping) return;
     this.cfg.grouping = grouping;
+    this.groupTicks = this.computeGroupTicks();
     this.scheduleEmit();
+  }
+
+  private computeGroupTicks(): number {
+    return Math.max(1, Number(decStepCount(dec(this.cfg.grouping), this.tickDec, "nearest")));
   }
 
   dispose(): void {
@@ -310,7 +318,7 @@ export class BookEngine {
       else this.sortedAsks = sorted;
     }
 
-    const groupTicks = Math.max(1, Number(decStepCount(dec(this.cfg.grouping), this.tickDec, "nearest")));
+    const groupTicks = this.groupTicks;
     const depth = this.cfg.depth;
     const out: BookLevel[] = [];
     let curBt: number | null = null;
@@ -319,7 +327,7 @@ export class BookEngine {
 
     const emitBucket = (): void => {
       out.push({
-        price: decToString(decMul(this.tickDec, dec(String(curBt)))),
+        price: this.bucketPrice(curBt!),
         size: decToString(decMul(this.lotDec, dec(curLots.toString()))),
         orderCount: curOrders,
         minExpiry: null,
@@ -350,6 +358,17 @@ export class BookEngine {
     return out;
   }
 
+  /** ticks -> price string is pure, so memoize across flushes; capped so a drifting market can't grow it unbounded. */
+  private bucketPrice(ticks: number): string {
+    let price = this.bucketPrices.get(ticks);
+    if (price === undefined) {
+      if (this.bucketPrices.size > 100_000) this.bucketPrices.clear();
+      price = decToString(decMul(this.tickDec, dec(String(ticks))));
+      this.bucketPrices.set(ticks, price);
+    }
+    return price;
+  }
+
   private imbalance(): number | null {
     if (this.bids.size === 0 || this.asks.size === 0) return null;
     const total = this.bidLots + this.askLots;
@@ -366,7 +385,8 @@ export class BookEngine {
         cur.set(k, l.size);
         const prev = this.prevRendered.get(k);
         if (prev === undefined) out.push({ price: l.price, side, dir: "new" });
-        else {
+        else if (prev !== l.size) {
+          // sizes are normalized decToString output, so equal strings mean equal values
           const c = decCmp(dec(l.size), dec(prev));
           if (c > 0) out.push({ price: l.price, side, dir: "up" });
           else if (c < 0) out.push({ price: l.price, side, dir: "down" });
