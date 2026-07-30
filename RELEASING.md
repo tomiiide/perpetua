@@ -20,6 +20,14 @@ Publishable packages: `@perpkit/core`, `@perpkit/venues`, `@perpkit/react`. The 
 
 ## One-time setup
 
-- **npm scope**: create the `perpetua` org on npm (https://www.npmjs.com/org/create) or ensure your npm account can publish `@perpkit/*`. All three packages publish with `publishConfig.access: "public"`.
-- **NPM_TOKEN**: create an npm automation token (npmjs.com → Access Tokens → Granular/Automation, with publish rights for the `@perpkit` scope) and add it as a repository secret named `NPM_TOKEN` (GitHub → Settings → Secrets and variables → Actions).
+Publishing uses [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/) (OIDC). CI authenticates via a short-lived OIDC token; there is no `NPM_TOKEN` secret.
+
+- **npm scope**: ensure your npm account can publish `@perpkit/*`. All three packages publish with `publishConfig.access: "public"`.
+- **Bootstrap publish**: a trusted publisher can only be configured on a package that already exists on npm, so the first version of each package (`@perpkit/core`, `@perpkit/venues`, `@perpkit/react`) must be published manually once (`npm publish` from each package dir after `pnpm build`).
+- **Trusted publisher**: for each package on npmjs.com (package → Settings → Trusted Publisher), add a GitHub Actions publisher with organization/user `tomiiide`, repository `perpetua`, and workflow filename `release.yml` (the filename only, not the full `.github/workflows/` path). Leave environment empty unless the workflow specifies one.
 - The release workflow uses the default `GITHUB_TOKEN` to open the version PR; enable "Allow GitHub Actions to create and approve pull requests" in Settings → Actions → General if it is disabled.
+
+Notes:
+
+- The workflow grants `id-token: write` and upgrades npm to latest before publishing; trusted publishing requires npm >= 11.5.1 and Node >= 22.14 (the workflow uses Node 24, whose bundled npm supports the OIDC handshake — older bundled npm versions fail with a misleading `E404`/"access token expired" on scoped packages).
+- With trusted publishing, npm generates and publishes [provenance attestations](https://docs.npmjs.com/generating-provenance-statements) by default; no `--provenance` flag or config is needed.
