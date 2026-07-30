@@ -1,6 +1,6 @@
 {
   "name": "@perpkit/venues",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Venue implementations against @perpkit/core's contract: mock, hyperliquid, pod, binance.",
   "type": "module",
   "license": "MIT",
