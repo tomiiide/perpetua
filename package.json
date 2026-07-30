@@ -8,6 +8,7 @@
     "name": "tomiiide"
   },
   "type": "module",
+  "packageManager": "pnpm@11.10.0",
   "engines": {
     "node": ">=18"
   },
@@ -17,9 +18,13 @@
     "test": "pnpm -r run test",
     "typecheck": "pnpm -r run typecheck",
     "lint": "pnpm -r run lint",
-    "knip": "knip"
+    "knip": "knip",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.31.1",
     "knip": "^6.25.0"
   }
 }

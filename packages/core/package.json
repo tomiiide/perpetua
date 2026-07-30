@@ -4,6 +4,25 @@
   "description": "Headless perp trading client: transport, actions, engines, decimal math, venue contract. No DOM, no CSS, no React.",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomiiide/perpetua.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/tomiiide/perpetua#readme",
+  "bugs": "https://github.com/tomiiide/perpetua/issues",
+  "keywords": [
+    "perpetuals",
+    "trading",
+    "perps",
+    "defi",
+    "headless",
+    "decimal",
+    "typescript"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": false,
   "files": [
     "dist"
