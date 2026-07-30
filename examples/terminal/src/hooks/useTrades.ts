@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { MarketId, Trade } from "@perpetua/core";
+import type { MarketId, Trade } from "@perpkit/core";
 import { client } from "../lib/perpetua";
 
 export function useTrades(marketId: MarketId | null, max = 48): Trade[] {

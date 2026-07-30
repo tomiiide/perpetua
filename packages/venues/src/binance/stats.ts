@@ -6,7 +6,7 @@ import {
   type MarketId,
   type MarketStats,
   type Unsubscribe,
-} from "@perpetua/core";
+} from "@perpkit/core";
 import { streamName, symbolFromMarketId } from "./mapping.js";
 import type { RestClient } from "./rest-client.js";
 import type { BnOpenInterest, BnTicker24h } from "./types.js";

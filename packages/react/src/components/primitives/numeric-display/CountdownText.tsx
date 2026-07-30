@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import type { ComponentPropsWithoutRef } from "react";
-import { formatCountdown } from "@perpetua/core";
+import { formatCountdown } from "@perpkit/core";
 
 export interface CountdownTextProps extends Omit<ComponentPropsWithoutRef<"span">, "children"> {
   target: number;

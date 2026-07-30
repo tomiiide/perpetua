@@ -1,4 +1,4 @@
-import type { Candle } from "@perpetua/core";
+import type { Candle } from "@perpkit/core";
 
 export interface ChartProps {
   candles: Candle[];

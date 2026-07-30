@@ -1,4 +1,4 @@
-import type { EventSink, MarketId, Unsubscribe } from "@perpetua/core";
+import type { EventSink, MarketId, Unsubscribe } from "@perpkit/core";
 import { mapAggTrade, streamName, symbolFromMarketId } from "./mapping.js";
 import type { BnAggTrade } from "./types.js";
 import type { BinanceWsClient } from "./ws-client.js";

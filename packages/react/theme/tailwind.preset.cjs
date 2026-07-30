@@ -1,5 +1,5 @@
 /** Perpetua Tailwind preset — maps utilities onto the CSS variables in theme/tokens.css.
- *  Usage: presets: [require('@perpetua/react/tailwind.preset')]
+ *  Usage: presets: [require('@perpkit/react/tailwind.preset')]
  *  Enables e.g.: bg-bg-1 text-long border-hairline h-row side-buy:text-long
  */
 module.exports = {

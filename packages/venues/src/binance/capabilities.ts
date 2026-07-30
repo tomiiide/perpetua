@@ -1,4 +1,4 @@
-import type { Capabilities, Resolution } from "@perpetua/core";
+import type { Capabilities, Resolution } from "@perpkit/core";
 
 /** Binance's extra `6h`/`3d` intervals have no home in the canonical `Resolution` union, so they're dropped. */
 export const BN_CANDLE_RESOLUTIONS: Resolution[] = [

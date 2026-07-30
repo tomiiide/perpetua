@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import type { Market } from "@perpetua/core";
-import { dec, formatCompact, formatFunding, formatPrice } from "@perpetua/core";
-import { CountdownText, Delta, FlashCell, Num, Sparkline } from "@perpetua/react/components";
+import type { Market } from "@perpkit/core";
+import { dec, formatCompact, formatFunding, formatPrice } from "@perpkit/core";
+import { CountdownText, Delta, FlashCell, Num, Sparkline } from "@perpkit/react/components";
 import type { Ticker } from "../hooks/useTicker";
 import { numericCompare } from "../lib/format";
 

@@ -1,4 +1,4 @@
-/* Perpetua design tokens — the CSS contract @perpetua/react components reference.
+/* Perpetua design tokens — the CSS contract @perpkit/react components reference.
    Compiled from the canonical definitions in /design/tokens (colors, typography, spacing).
    Terminal-brutalist: near-black surfaces, electric-teal accent, mono UI, square corners.
    Naming: --pt-{category}-{name}. Tailwind preset + MUI bridge consume the same vars. */

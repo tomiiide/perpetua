@@ -1,4 +1,4 @@
-import { dec, decMul, decToString } from "@perpetua/core";
+import { dec, decMul, decToString } from "@perpkit/core";
 
 /** Grouping steps offered in the order book: tick × {1, 10, 100, 1000}. */
 export function groupingPresets(tickSize: string): string[] {

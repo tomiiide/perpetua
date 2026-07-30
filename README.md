@@ -6,7 +6,7 @@ Headless primitives for pro trading software. A framework-agnostic perp trading 
 
 ## Why
 
-- **Headless core.** `@perpetua/core` has no DOM, no CSS, no React. Transport, order-book engine, decimal math, and formatters are all pure and tree-shakeable.
+- **Headless core.** `@perpkit/core` has no DOM, no CSS, no React. Transport, order-book engine, decimal math, and formatters are all pure and tree-shakeable.
 - **Exact decimals.** Prices and sizes cross every boundary as strings; arithmetic runs on a scaled-bigint engine, so no float ever touches a price.
 - **One contract, many venues.** Adapters implement a single `Venue` interface. Ordering and gap-recovery are the engine's job, not the venue's.
 - **Bring your own styling.** React primitives are accessible and unstyled, exposing state through `data-*` attributes and a `--pt-*` token contract you can theme with plain CSS, Tailwind, or MUI.
@@ -14,18 +14,18 @@ Headless primitives for pro trading software. A framework-agnostic perp trading 
 ## Install
 
 ```bash
-pnpm add @perpetua/core @perpetua/venues @perpetua/react
+pnpm add @perpkit/core @perpkit/venues @perpkit/react
 ```
 
-`@perpetua/react` is optional (React 18/19 peer). Core and venues have no UI dependency.
+`@perpkit/react` is optional (React 18/19 peer). Core and venues have no UI dependency.
 
 ## Usage
 
 ### Stream a live order book
 
 ```ts
-import { createClient, watchOrderBook } from "@perpetua/core";
-import { hyperliquid } from "@perpetua/venues/hyperliquid";
+import { createClient, watchOrderBook } from "@perpkit/core";
+import { hyperliquid } from "@perpkit/venues/hyperliquid";
 
 const client = createClient({ venue: hyperliquid() });
 
@@ -59,9 +59,9 @@ Feeds: `book`, `trades`, `candle`, `markPrice`, `indexPrice`, `funding`, `stats`
 ### Render with the React primitives
 
 ```tsx
-import "@perpetua/react/theme/tokens.css";
-import { Num } from "@perpetua/react/components";
-import { formatPrice } from "@perpetua/core";
+import "@perpkit/react/theme/tokens.css";
+import { Num } from "@perpkit/react/components";
+import { formatPrice } from "@perpkit/core";
 
 <Num parts={formatPrice("64051.5", { tickSize: "0.1" })} />;
 ```
@@ -72,9 +72,9 @@ Every component styles itself only through `--pt-*` tokens and exposes state as 
 
 | Package | Description |
 | --- | --- |
-| `@perpetua/core` | Headless perp client: transport, actions, `BookEngine`, decimal math, formatters, venue contract. MIT. |
-| `@perpetua/venues` | Venue adapters against the core contract. Hyperliquid market data today. MIT. |
-| `@perpetua/react` | Unstyled, accessible React primitives plus the theme layer (`tokens.css`, `tailwind.preset.cjs`, `mui-theme.ts`). MIT. |
+| `@perpkit/core` | Headless perp client: transport, actions, `BookEngine`, decimal math, formatters, venue contract. MIT. |
+| `@perpkit/venues` | Venue adapters against the core contract. Hyperliquid market data today. MIT. |
+| `@perpkit/react` | Unstyled, accessible React primitives plus the theme layer (`tokens.css`, `tailwind.preset.cjs`, `mui-theme.ts`). MIT. |
 
 ## Documentation
 
@@ -94,7 +94,7 @@ A full live terminal that dogfoods all three packages against Hyperliquid:
 ```bash
 pnpm install
 pnpm build
-pnpm --filter @perpetua/example-terminal dev   # http://localhost:5173
+pnpm --filter @perpkit/example-terminal dev   # http://localhost:5173
 ```
 
 See [`examples/terminal`](examples/terminal).

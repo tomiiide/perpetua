@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Candle, MarketId, Resolution } from "@perpetua/core";
+import type { Candle, MarketId, Resolution } from "@perpkit/core";
 import { client } from "../lib/perpetua";
 
 const RESOLUTION_MS: Record<Resolution, number> = {

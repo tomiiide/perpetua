@@ -1,4 +1,4 @@
-# @perpetua/core
+# @perpkit/core
 
 Headless perp trading client: venue contract, subscription actions, order-book engine, exact decimal math, and structured formatters. No DOM, no CSS, no React; pure and tree-shakeable.
 
@@ -7,16 +7,16 @@ Every price and size crosses the API as a decimal string. Arithmetic runs on an 
 ## Install
 
 ```bash
-pnpm add @perpetua/core
+pnpm add @perpkit/core
 ```
 
-Pair it with a venue adapter such as `@perpetua/venues`.
+Pair it with a venue adapter such as `@perpkit/venues`.
 
 ## Example
 
 ```ts
-import { createClient, watchOrderBook } from "@perpetua/core";
-import { hyperliquid } from "@perpetua/venues/hyperliquid";
+import { createClient, watchOrderBook } from "@perpkit/core";
+import { hyperliquid } from "@perpkit/venues/hyperliquid";
 
 const client = createClient({ venue: hyperliquid() });
 
@@ -30,7 +30,7 @@ watchOrderBook(client, {
 });
 ```
 
-Entry points: `@perpetua/core` (everything), plus focused subpaths `/contract`, `/math`, `/format`, `/actions`, `/client`, and `/testing` (venue conformance suite + deterministic mock venue).
+Entry points: `@perpkit/core` (everything), plus focused subpaths `/contract`, `/math`, `/format`, `/actions`, `/client`, and `/testing` (venue conformance suite + deterministic mock venue).
 
 ## Docs
 

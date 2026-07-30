@@ -7,14 +7,14 @@ The authoritative definitions live in two places. Do not work from memory of the
 - [CORE_SPEC.md §4](../CORE_SPEC.md): the venue contract, its division of labor, and venue profiles.
 - [MODELS.md](../MODELS.md): every canonical type (`Market`, `BookEvent`, `Trade`, `Candle`, `Capabilities`, ...) with per-field rules.
 
-The TypeScript source of truth is `@perpetua/core/contract`.
+The TypeScript source of truth is `@perpkit/core/contract`.
 
 ## The shape of a venue
 
 A venue package exports one factory returning a `Venue`:
 
 ```ts
-import type { EventSink, MarketDataVenue, Subscription, Unsubscribe, Venue } from "@perpetua/core";
+import type { EventSink, MarketDataVenue, Subscription, Unsubscribe, Venue } from "@perpkit/core";
 
 export interface AcmeConfig {
   apiUrl?: string;
@@ -43,7 +43,7 @@ Configuration is plain factory props (URLs, transports). The optional `account` 
 - **Only emit the requested kind.** A `book` subscription must never see a `trades` event.
 - **Unsubscribe silences immediately.** After the returned function runs, the sink must never be called again, even for events already in flight.
 - **Subscriptions are isolated.** Two subscribers to the same feed each get their own events; cancelling one must not affect the other. Share the underlying socket, not the sink list entry.
-- **Reject unsupported requests loudly.** An unsupported candle resolution (anything outside `capabilities().candleResolutions`) throws `ValidationError` from `@perpetua/core`, synchronously for `subscribe`, as a rejection for `fetchCandles`.
+- **Reject unsupported requests loudly.** An unsupported candle resolution (anything outside `capabilities().candleResolutions`) throws `ValidationError` from `@perpkit/core`, synchronously for `subscribe`, as a rejection for `fetchCandles`.
 - **Ordering is the engine's job, sequence passthrough is yours.** Do not reorder or de-gap the book feed; if the venue provides sequence numbers, pass them through on `BookEvent.seq` and set `capabilities().sequenceNumbers: true`. The `BookEngine` handles gap detection and resync (it calls your `fetchBookSnapshot` to recover).
 - **A capability you lack is a documented no-op or a gate, never a lie.** Hyperliquid has no public liquidations feed, so its `liquidations` subscription returns an unsubscriber and never calls the sink. If `publicTape` is `false`, a `trades` subscription must emit nothing.
 
@@ -63,12 +63,12 @@ Configuration is plain factory props (URLs, transports). The optional `account` 
 
 ## Running the conformance suite
 
-`@perpetua/core/testing` ships `runConformance`, which drives a `MarketDataVenue` purely through its public contract and reports every invariant violation: capability domains, market shapes, decimal-string discipline, alignment, ordering, gating, `ValidationError` rejection, unsubscribe silence, and subscription isolation. Passing it is the bar for shipping a venue package.
+`@perpkit/core/testing` ships `runConformance`, which drives a `MarketDataVenue` purely through its public contract and reports every invariant violation: capability domains, market shapes, decimal-string discipline, alignment, ordering, gating, `ValidationError` rejection, unsubscribe silence, and subscription isolation. Passing it is the bar for shipping a venue package.
 
 ```ts
 // acme.conformance.test.ts
 import { describe, expect, it } from "vitest";
-import { runConformance } from "@perpetua/core/testing";
+import { runConformance } from "@perpkit/core/testing";
 import { acme } from "./index.js";
 
 describe("acme venue conformance", () => {
@@ -82,7 +82,7 @@ describe("acme venue conformance", () => {
 
 `ConformanceReport` is `{ venue, checks, failures, passed }`; each failure names the violated check (`book.level.price.aligned`, `reject.candleResolution`, ...) with detail, so a red run reads as a to-do list.
 
-Run it against recorded fixtures, not the live exchange: capture real sessions, replay them through your transport (the factory's URL/transport props exist exactly so tests can inject a replay), and keep the suite deterministic. `@perpetua/core/testing` also exports the pieces the core test-bed uses: `createMockVenue` (the reference implementation proving the contract is implementable; read its source when a rule is ambiguous), `createTestClock`, and `createTestScheduler`. The full testing strategy, including the adversarial book suite, is CORE_SPEC.md §9.
+Run it against recorded fixtures, not the live exchange: capture real sessions, replay them through your transport (the factory's URL/transport props exist exactly so tests can inject a replay), and keep the suite deterministic. `@perpkit/core/testing` also exports the pieces the core test-bed uses: `createMockVenue` (the reference implementation proving the contract is implementable; read its source when a rule is ambiguous), `createTestClock`, and `createTestScheduler`. The full testing strategy, including the adversarial book suite, is CORE_SPEC.md §9.
 
 ## Checklist
 

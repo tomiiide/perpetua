@@ -1,15 +1,15 @@
 # Theming
 
-`@perpetua/react` components are unstyled. They render structure and state; every visual decision flows through a CSS custom-property contract (`--pt-*`) and `data-*` attributes you target from your own styling system. Nothing is injected: if you never import the theme files, the primitives render bare.
+`@perpkit/react` components are unstyled. They render structure and state; every visual decision flows through a CSS custom-property contract (`--pt-*`) and `data-*` attributes you target from your own styling system. Nothing is injected: if you never import the theme files, the primitives render bare.
 
-The visual language behind the shipped values (terminal brutalist: near-black surfaces, hairlines, mono data, square corners) is documented in [design/STYLE_GUIDE.md](../design/STYLE_GUIDE.md). The machine-readable design source lives in [design/tokens/](../design/tokens/); `@perpetua/react` ships the compiled consumption layer.
+The visual language behind the shipped values (terminal brutalist: near-black surfaces, hairlines, mono data, square corners) is documented in [design/STYLE_GUIDE.md](../design/STYLE_GUIDE.md). The machine-readable design source lives in [design/tokens/](../design/tokens/); `@perpkit/react` ships the compiled consumption layer.
 
 ## The token contract
 
 Import the compiled tokens once at your app root:
 
 ```ts
-import "@perpetua/react/theme/tokens.css";
+import "@perpkit/react/theme/tokens.css";
 ```
 
 That declares every `--pt-*` variable on `:root` (dark is the default theme). The categories:
@@ -86,7 +86,7 @@ The preset maps utilities onto the same variables, so Tailwind classes stay them
 ```js
 // tailwind.config.js
 module.exports = {
-  presets: [require("@perpetua/react/tailwind.preset")],
+  presets: [require("@perpkit/react/tailwind.preset")],
   content: ["./src/**/*.{ts,tsx}"],
 };
 ```
@@ -102,12 +102,12 @@ Variants: `side-buy`, `side-sell`, `delta-up`, `delta-down`, `flash-up`, `flash-
 
 ## MUI bridge
 
-For apps embedded in an MUI shell, `@perpetua/react/theme/mui` exports `perpetuaMuiTheme`, an MUI theme whose palette, typography, and component overrides resolve to the same `--pt-*` variables (square corners, hairline Paper, no shadows, mono type, plus `palette.long`/`palette.short`):
+For apps embedded in an MUI shell, `@perpkit/react/theme/mui` exports `perpetuaMuiTheme`, an MUI theme whose palette, typography, and component overrides resolve to the same `--pt-*` variables (square corners, hairline Paper, no shadows, mono type, plus `palette.long`/`palette.short`):
 
 ```tsx
-import "@perpetua/react/theme/tokens.css";
+import "@perpkit/react/theme/tokens.css";
 import { ThemeProvider } from "@mui/material/styles";
-import { perpetuaMuiTheme } from "@perpetua/react/theme/mui";
+import { perpetuaMuiTheme } from "@perpkit/react/theme/mui";
 
 <ThemeProvider theme={perpetuaMuiTheme}>{app}</ThemeProvider>;
 ```

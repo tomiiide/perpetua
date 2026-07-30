@@ -1,4 +1,4 @@
-# @perpetua/react
+# @perpkit/react
 
 Unstyled, accessible React primitives for trading UIs, plus the Perpetua theme layer. Components carry structure and state; every visual decision flows through a `--pt-*` CSS token contract and `data-*` attributes you style with plain CSS, Tailwind, or MUI.
 
@@ -7,15 +7,15 @@ Includes numeric display (`Num`, `Delta`, `FlashCell`, `Sparkline`, `CountdownTe
 ## Install
 
 ```bash
-pnpm add @perpetua/react   # React 18/19 peer
+pnpm add @perpkit/react   # React 18/19 peer
 ```
 
 ## Example
 
 ```tsx
-import "@perpetua/react/theme/tokens.css";
-import { Num } from "@perpetua/react/components";
-import { formatPrice } from "@perpetua/core";
+import "@perpkit/react/theme/tokens.css";
+import { Num } from "@perpkit/react/components";
+import { formatPrice } from "@perpkit/core";
 
 <Num parts={formatPrice("64051.5", { tickSize: "0.1" })} />;
 ```

@@ -1,7 +1,7 @@
 /**
  * Venue conformance suite + deterministic mock venue (CORE_SPEC.md §9). Venue
  * packages run `runConformance` against their venue (fed recorded fixtures) as
- * the bar for a `@perpetua/venue-*` release; the mock is the reference that
+ * the bar for a `@perpkit/venue-*` release; the mock is the reference that
  * proves the contract is implementable and the fixture backbone for the engine.
  */
 export { runConformance } from "./run-conformance.js";

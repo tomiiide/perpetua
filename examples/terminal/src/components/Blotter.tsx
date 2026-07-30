@@ -1,4 +1,4 @@
-import { EmptyState, Tabs } from "@perpetua/react/components";
+import { EmptyState, Tabs } from "@perpkit/react/components";
 
 const NOTE = "Account data requires a credential-connected venue. This demo runs the market-data surface only.";
 

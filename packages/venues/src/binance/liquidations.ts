@@ -1,4 +1,4 @@
-import type { EventSink, Unsubscribe } from "@perpetua/core";
+import type { EventSink, Unsubscribe } from "@perpkit/core";
 import { mapForceOrder } from "./mapping.js";
 import type { BnForceOrder } from "./types.js";
 import type { BinanceWsClient } from "./ws-client.js";

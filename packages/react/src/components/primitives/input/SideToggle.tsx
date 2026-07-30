@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import type { ComponentPropsWithoutRef } from "react";
-import type { Side } from "@perpetua/core";
+import type { Side } from "@perpkit/core";
 
 export interface SideToggleProps extends Omit<ComponentPropsWithoutRef<"div">, "children" | "onChange"> {
   value: Side;

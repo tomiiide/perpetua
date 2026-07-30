@@ -1,4 +1,4 @@
-# @perpetua/core — Engineering Spec v0.1
+# @perpkit/core — Engineering Spec v0.1
 
 The headless client + React hooks layer. "viem/wagmi for perps": a typed, framework-agnostic client for perp DEX market data and order lifecycle, with React bindings. No DOM, no CSS, no venue lock-in.
 
@@ -27,7 +27,7 @@ Companion docs: `SPEC.md` (full component inventory), `MODELS.md` (canonical dat
 viem/wagmi's layering, literally: single-venue client (viem) → desk multiplexer (@wagmi/core) → hooks (wagmi).
 
 ```
-@perpetua/core            ("our viem" — ONE venue per client)
+@perpkit/core            ("our viem" — ONE venue per client)
 ├─ /client        # createClient({ venue }) — transport, subscription refcounting
 ├─ /actions       # standalone, tree-shakeable functions: action(client, params)
 │   ├─ read:  getMarkets, getBookSnapshot, getCandles, getPositions, getBalances,
@@ -46,7 +46,7 @@ viem/wagmi's layering, literally: single-venue client (viem) → desk multiplexe
 ├─ /contract      # MarketDataVenue, AccountVenue interfaces — the contract lives in core
 └─ /testing       # fixture recorder/replayer + conformance suite (venue packages run it in their tests)
 
-@perpetua/venues      ("our @wagmi/connectors" — root-level, implementations only)
+@perpkit/venues      ("our @wagmi/connectors" — root-level, implementations only)
 ├─ /mock          # deterministic, scriptable — used by all tests
 ├─ /hyperliquid   # DEX: wraps HL API/SDK into normalized events
 ├─ /pod           # DEX: pod.network v2 (ob_ JSON-RPC) — batch-auction, poll-based
@@ -54,7 +54,7 @@ viem/wagmi's layering, literally: single-venue client (viem) → desk multiplexe
 │                 # user stream; browser mode requires proxyUrl (see §5.4), server mode signs direct
 └─ (third parties ship their own packages against core's contract: `perpetua-venue-aster`)
 
-@perpetua/desk            ("our @wagmi/core" — ties venues together, no React)
+@perpkit/desk            ("our @wagmi/core" — ties venues together, no React)
 ├─ createDesk({ venues })   # venues in — desk creates its clients internally
 │                           # (wagmi-style; `clients` override as escape hatch)
 ├─ sessions       # derived state: each venue follows its own credential prop
@@ -63,19 +63,19 @@ viem/wagmi's layering, literally: single-venue client (viem) → desk multiplexe
 ├─ merge          # MarketList union, cross-venue blotter union, per-venue health map
 └─ (a desk with one venue adds ~nothing — single-venue apps still use it for the provider)
 
-@perpetua/react           ("our wagmi" — peer dep: react >= 18), two subpath entries:
-├─ /hooks         # import { useOrderBook } from '@perpetua/react/hooks'
+@perpkit/react           ("our wagmi" — peer dep: react >= 18), two subpath entries:
+├─ /hooks         # import { useOrderBook } from '@perpkit/react/hooks'
 │                 # thin 1:1 wrappers over core actions; zero component code pulled in
-└─ /components    # import { OrderBook } from '@perpetua/react/components'
+└─ /components    # import { OrderBook } from '@perpkit/react/components'
     ├─ primitives   # unstyled, data-free: NumericInput, FlashCell, DataTable, SideToggle…
     └─ widgets      # connected: OrderBook, OrderEntryPanel, PositionsTable… (built on /hooks)
 
-@perpetua/theme   # CSS only, no JS: tokens.css, tokens.json, tailwind preset, MUI bridge
+@perpkit/theme   # CSS only, no JS: tokens.css, tokens.json, tailwind preset, MUI bridge
 ```
 
 **Dependency rule (one-way, enforced in CI):** `components/widgets → components/primitives + hooks → desk → core` and `venues → core (contract only)`. Never the reverse; hooks import nothing from components; core knows nothing about desks or venue implementations — it defines the contract, venues fulfill it.
 
-**Packaging:** subpath `exports` in package.json + `sideEffects: false`, so `@perpetua/react/hooks` consumers never bundle a component and vice versa (primitives are usable with your own state instead of our hooks). The bare `@perpetua/react` root re-exports both for convenience. Components reference `--pt-*` variables for optional theming but ship unstyled; `@perpetua/theme` is pure CSS artifacts.
+**Packaging:** subpath `exports` in package.json + `sideEffects: false`, so `@perpkit/react/hooks` consumers never bundle a component and vice versa (primitives are usable with your own state instead of our hooks). The bare `@perpkit/react` root re-exports both for convenience. Components reference `--pt-*` variables for optional theming but ship unstyled; `@perpkit/theme` is pure CSS artifacts.
 
 **Action conventions** (mirroring viem):
 - `get*(client, params)` — one-shot, returns `Promise<T>`
@@ -84,7 +84,7 @@ viem/wagmi's layering, literally: single-venue client (viem) → desk multiplexe
 - Every action is importable standalone and tree-shakes independently; nothing hangs off a client god-object
 
 ```ts
-import { createClient, watchOrderBook, placeOrder } from '@perpetua/core';
+import { createClient, watchOrderBook, placeOrder } from '@perpkit/core';
 
 const client = createClient({ venue: hyperliquid() });   // one venue — viem-style
 const markets = await getMarkets(client);
@@ -106,7 +106,7 @@ ESM-only, tree-shakeable, zero runtime deps: the decimal engine is a hand-rolled
 - All rounding is explicit: `tickRound(price, market, 'down'|'up'|'nearest')`, `lotRound(size, market, mode)`. No implicit rounding anywhere.
 - Formatters return structured parts (`{ sign, int, frac, unit }`) so UIs can style pieces independently.
 
-## 4. Venue contract (`@perpetua/core/contract`)
+## 4. Venue contract (`@perpkit/core/contract`)
 
 All identifiers are the opaque `MarketId` from MODELS.md — never display symbols. Resolution of `"ETH-PERP"` → `MarketId` happens once via `getMarkets`.
 
@@ -192,9 +192,9 @@ The full `Capabilities` interface lives in MODELS.md (single definition): `match
 A **client** is bound to exactly one venue — like a viem client is bound to one chain. A **desk** ties N venues into one surface — and, like wagmi's `createConfig`, it **creates its clients internally**: you hand it venues, not clients.
 
 ```ts
-import { createDesk } from '@perpetua/desk';
-import { hyperliquid } from '@perpetua/venues/hyperliquid';
-import { pod } from '@perpetua/venues/pod';
+import { createDesk } from '@perpkit/desk';
+import { hyperliquid } from '@perpkit/venues/hyperliquid';
+import { pod } from '@perpkit/venues/pod';
 
 const desk = createDesk({
   venues: [
@@ -219,7 +219,7 @@ interface Venue<TCred = unknown> {
 
 Widgets and hooks degrade automatically while a venue has no session: `usePositions()` reports the venue as `disconnected`, `OrderEntryPanel` renders its connect prompt.
 
-Escape hatch (wagmi's `client` option, same idea): pass a pre-built client for a venue that needs custom construction — `createDesk({ venues: […], clients: [myTunedHlClient] })` — desk uses yours instead of constructing one. Building a bare `createClient({ venue })` from `@perpetua/core` directly remains the bot/single-venue-script path.
+Escape hatch (wagmi's `client` option, same idea): pass a pre-built client for a venue that needs custom construction — `createDesk({ venues: […], clients: [myTunedHlClient] })` — desk uses yours instead of constructing one. Building a bare `createClient({ venue })` from `@perpkit/core` directly remains the bot/single-venue-script path.
 
 - The **client** owns transport and lifecycle for its one venue: connection or poll loop, `SubscriptionManager` refcounting (N consumers of one market share one stream, unsubscribed 5s after the last consumer leaves), engines. Core actions (`watchOrderBook(client, …)`) work on a bare client — no desk required.
 - The **desk** owns client construction/teardown plus everything cross-venue; it holds no transport of its own. Desk actions mirror core actions 1:1 (`watchOrderBook(desk, …)`) and delegate to the owning client. `desk.destroy()` tears down all clients it created (never ones passed in). One `options` bag applies to all constructed clients, per-venue overridable.
@@ -247,7 +247,7 @@ Account state across venues: `usePositions`/`useOpenOrders` return the merged un
 ### 5.3 React provider & SSR
 
 ```tsx
-import { PerpetuaProvider } from '@perpetua/react';
+import { PerpetuaProvider } from '@perpkit/react';
 
 <PerpetuaProvider desk={desk}>
   <App />
@@ -342,7 +342,7 @@ A slow venue must never degrade a fast one. Enforced by construction:
 - Must handle: fill arriving before ack; cancel-ack for an order never acked; duplicate fills (idempotent by fill id).
 - Order state machine: `pending → open → partiallyFilled → filled | cancelled | rejected | expired` — no other transitions representable. `expired` is reachable only on venues with deadline orders (`tifs` includes `GTT`, e.g. pod); the engine treats it as terminal, like `cancelled` but venue-initiated.
 
-## 6. React hooks layer (`@perpetua/react/hooks`)
+## 6. React hooks layer (`@perpkit/react/hooks`)
 
 Thin bindings, wagmi-style: each hook is a 1:1 wrapper over a **desk action** (`useOrderBook` = `watchOrderBook(desk, …)` + `useSyncExternalStore`). No hook contains domain logic — all logic lives in engines (core) and routing/merging (desk); React is just another consumer. Anything achievable with a hook is achievable without React via the underlying desk or core action.
 
@@ -384,7 +384,7 @@ Thin bindings, wagmi-style: each hook is a 1:1 wrapper over a **desk action** (`
 
 1. **Recorded fixtures**: capture real venue websocket sessions (volatile + quiet periods) into replayable fixture files. Deterministic replay through engines; snapshot-test outputs.
 2. **Adversarial suite**: programmatic gap injection, reorder, duplicate, disconnect-mid-snapshot, stale heartbeat — every BookEngine contract clause (§5) has a named test.
-3. **Venue conformance**: same suite runs against any venue via mock transport; passing it is the bar for a `@perpetua/venue-*` release.
+3. **Venue conformance**: same suite runs against any venue via mock transport; passing it is the bar for a `@perpkit/venue-*` release.
 4. **Property tests**: book invariants (bids strictly descending, asks ascending, no crossed book after any event sequence, grouping conserves total size).
 5. Live smoke test (CI cron, non-blocking): 60s against real Hyperliquid testnet.
 
@@ -407,14 +407,14 @@ M3 is the public proof point. M5 is the architectural proof point: pod is struct
 
 Open-core, with the line drawn at composed widgets:
 
-| MIT (public monorepo) | Commercial (`@perpetua/pro`, private repo) |
+| MIT (public monorepo) | Commercial (`@perpkit/pro`, private repo) |
 |---|---|
-| `@perpetua/core` (client, actions, engines, math) + `@perpetua/desk` | Connected widgets: `OrderBook`, `OrderEntryPanel`, `PositionsTable`, blotter tables, dialogs |
-| `@perpetua/react/hooks` (all hooks) | `PerpsTerminal` / `MobileTerminal` templates + saved layouts |
-| `@perpetua/react/components` **primitives only** in OSS | Figma library |
-| `@perpetua/theme`, all venues, `/testing` conformance suite | |
+| `@perpkit/core` (client, actions, engines, math) + `@perpkit/desk` | Connected widgets: `OrderBook`, `OrderEntryPanel`, `PositionsTable`, blotter tables, dialogs |
+| `@perpkit/react/hooks` (all hooks) | `PerpsTerminal` / `MobileTerminal` templates + saved layouts |
+| `@perpkit/react/components` **primitives only** in OSS | Figma library |
+| `@perpkit/theme`, all venues, `/testing` conformance suite | |
 
-Rationale: hooks + primitives are the adoption funnel and the builder-code carrier (the free tier still monetizes via default builder codes); widgets are what teams would pay to skip. `@perpetua/pro` depends only on public APIs of the MIT packages — it's a customer of its own platform, which keeps the OSS boundary honest. Consequence for M0: two repos from day one; the public monorepo never contains pro code.
+Rationale: hooks + primitives are the adoption funnel and the builder-code carrier (the free tier still monetizes via default builder codes); widgets are what teams would pay to skip. `@perpkit/pro` depends only on public APIs of the MIT packages — it's a customer of its own platform, which keeps the OSS boundary honest. Consequence for M0: two repos from day one; the public monorepo never contains pro code.
 
 ## 12. Open questions
 

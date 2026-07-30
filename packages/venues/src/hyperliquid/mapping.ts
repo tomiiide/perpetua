@@ -14,7 +14,7 @@ import {
   type MarketId,
   type Prices,
   type Trade,
-} from "@perpetua/core";
+} from "@perpkit/core";
 import type { HlAssetCtx, HlBookLevel, HlCandle, HlL2Book, HlUniverseAsset, HlWsTrade } from "./types.js";
 
 const VENUE_ID = "hyperliquid";

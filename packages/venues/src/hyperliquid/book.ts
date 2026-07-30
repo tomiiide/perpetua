@@ -1,4 +1,4 @@
-import type { BookEvent, EventSink, MarketId, Unsubscribe } from "@perpetua/core";
+import type { BookEvent, EventSink, MarketId, Unsubscribe } from "@perpkit/core";
 import { coinFromMarketId, mapBookSnapshot } from "./mapping.js";
 import type { InfoClient } from "./info-client.js";
 import type { HlL2Book } from "./types.js";

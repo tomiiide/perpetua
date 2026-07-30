@@ -17,13 +17,13 @@ importers:
 
   examples/terminal:
     dependencies:
-      '@perpetua/core':
+      '@perpkit/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@perpetua/react':
+      '@perpkit/react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@perpetua/venues':
+      '@perpkit/venues':
         specifier: workspace:*
         version: link:../../packages/venues
       react:
@@ -72,7 +72,7 @@ importers:
       '@mui/material':
         specifier: ^5 || ^6
         version: 6.5.0(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@perpetua/core':
+      '@perpkit/core':
         specifier: workspace:*
         version: link:../core
       '@radix-ui/react-accordion':
@@ -142,7 +142,7 @@ importers:
 
   packages/venues:
     dependencies:
-      '@perpetua/core':
+      '@perpkit/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:

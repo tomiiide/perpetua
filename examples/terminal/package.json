@@ -1,9 +1,9 @@
 {
-  "name": "@perpetua/example-terminal",
+  "name": "@perpkit/example-terminal",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "Live perps terminal demo — dogfoods @perpetua/core + @perpetua/venues + @perpetua/react against Hyperliquid.",
+  "description": "Live perps terminal demo — dogfoods @perpkit/core + @perpkit/venues + @perpkit/react against Hyperliquid.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -11,9 +11,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@perpetua/core": "workspace:*",
-    "@perpetua/react": "workspace:*",
-    "@perpetua/venues": "workspace:*",
+    "@perpkit/core": "workspace:*",
+    "@perpkit/react": "workspace:*",
+    "@perpkit/venues": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

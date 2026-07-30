@@ -4,17 +4,17 @@ Perpetua is three packages:
 
 | Package | What it gives you |
 | --- | --- |
-| `@perpetua/core` | Headless client, `watchOrderBook` (BookEngine), decimal math, formatters, the venue contract. No DOM, no React. |
-| `@perpetua/venues` | Venue adapters. Hyperliquid market data ships today. |
-| `@perpetua/react` | Unstyled, accessible React primitives plus the `--pt-*` theme layer. |
+| `@perpkit/core` | Headless client, `watchOrderBook` (BookEngine), decimal math, formatters, the venue contract. No DOM, no React. |
+| `@perpkit/venues` | Venue adapters. Hyperliquid market data ships today. |
+| `@perpkit/react` | Unstyled, accessible React primitives plus the `--pt-*` theme layer. |
 
 You can stop at any layer: core alone for a bot or backend, core + venues for data pipelines, all three for a terminal UI.
 
 ## Install
 
 ```bash
-pnpm add @perpetua/core @perpetua/venues        # headless
-pnpm add @perpetua/react                        # optional, React 18/19 peer
+pnpm add @perpkit/core @perpkit/venues        # headless
+pnpm add @perpkit/react                        # optional, React 18/19 peer
 ```
 
 Runtime requirements: global `fetch` and `WebSocket` (any modern browser, Node 22+, Bun, or Deno). No other runtime dependencies in core or venues.
@@ -25,8 +25,8 @@ One venue per client, viem-style. Market discovery happens once through `client.
 
 ```ts
 // watch-book.ts, run with: node --experimental-strip-types watch-book.ts (or tsx)
-import { createClient, watchOrderBook } from "@perpetua/core";
-import { hyperliquid } from "@perpetua/venues/hyperliquid";
+import { createClient, watchOrderBook } from "@perpkit/core";
+import { hyperliquid } from "@perpkit/venues/hyperliquid";
 
 const client = createClient({ venue: hyperliquid() });
 
@@ -98,7 +98,7 @@ Subscription kinds: `book`, `trades`, `candle` (takes a `resolution`), `markPric
 Pure, tree-shakeable helpers. All rounding is explicit:
 
 ```ts
-import { tickRound, formatPrice } from "@perpetua/core";
+import { tickRound, formatPrice } from "@perpkit/core";
 
 const price = tickRound("64051.5342", { tickSize: "0.1" }, "down"); // "64051.5"
 
@@ -110,14 +110,14 @@ Formatters return structured parts (`sign`, `int`, `frac`, `unit`, `text`) so UI
 
 ## The React path
 
-`@perpetua/react` ships unstyled primitives. They carry structure, accessibility, and state (as `data-*` attributes); all visuals come from the `--pt-*` CSS token contract. Import the tokens once, then style with plain CSS, Tailwind, or MUI (see [theming.md](theming.md)).
+`@perpkit/react` ships unstyled primitives. They carry structure, accessibility, and state (as `data-*` attributes); all visuals come from the `--pt-*` CSS token contract. Import the tokens once, then style with plain CSS, Tailwind, or MUI (see [theming.md](theming.md)).
 
 A live order-book hook is a thin wrapper over `watchOrderBook`:
 
 ```tsx
 import { useEffect, useState } from "react";
-import type { BookState, MarketId } from "@perpetua/core";
-import { watchOrderBook } from "@perpetua/core";
+import type { BookState, MarketId } from "@perpkit/core";
+import { watchOrderBook } from "@perpkit/core";
 import { client } from "./lib/perpetua"; // your shared createClient instance
 
 export function useOrderBook(marketId: MarketId | null): BookState | null {
@@ -134,10 +134,10 @@ export function useOrderBook(marketId: MarketId | null): BookState | null {
 Rendering with the primitives:
 
 ```tsx
-import "@perpetua/react/theme/tokens.css";
-import { Num, StatusDot } from "@perpetua/react/components";
-import { formatPrice, formatSize } from "@perpetua/core";
-import type { BookState, Market } from "@perpetua/core";
+import "@perpkit/react/theme/tokens.css";
+import { Num, StatusDot } from "@perpkit/react/components";
+import { formatPrice, formatSize } from "@perpkit/core";
+import type { BookState, Market } from "@perpkit/core";
 
 export function BookRow({ book, market }: { book: BookState; market: Market }) {
   const bid = book.bids[0];

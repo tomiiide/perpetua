@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import type { ComponentPropsWithoutRef } from "react";
-import type { Dec, FormattedParts } from "@perpetua/core";
+import type { Dec, FormattedParts } from "@perpkit/core";
 
 export interface NumProps extends Omit<ComponentPropsWithoutRef<"span">, "children"> {
   parts?: FormattedParts;

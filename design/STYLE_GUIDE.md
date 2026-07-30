@@ -13,7 +13,7 @@ Brand and design system for **Perpetua**, foundational widgets for pro trading s
 - **Casing:** sentence case for prose and display copy. UPPERCASE mono with wide tracking (0.12em) for labels, tickers, section eyebrows.
 - **Person:** "your" for the reader's product ("Your terminal."); "we" is avoided — the library speaks for itself.
 - **No emoji. Ever.**
-- Code identifiers appear verbatim in copy (`useOrderBook`, `@perpetua/core`) set in mono.
+- Code identifiers appear verbatim in copy (`useOrderBook`, `@perpkit/core`) set in mono.
 - Market shorthand is native vocabulary: ETH-PERP, OI, uPnL, TIF, liq price.
 
 ## Color
@@ -129,4 +129,4 @@ Newsreader and IBM Plex Mono load from Google Fonts (see [`tokens/fonts.css`](to
 ## Consuming the tokens
 
 - **Design source of truth:** [`tokens/`](tokens/) — `colors.css` (dark default + `[data-theme="light"]`), `typography.css`, `spacing.css` (+ `[data-density="comfortable"]`), `fonts.css`, and `tokens.json` (W3C Design Tokens format for Style Dictionary).
-- **React / app consumption:** `@perpetua/react` ships the compiled contract at `packages/react/theme/` — `tokens.css` (the `--pt-*` variable declarations components reference), `tailwind.preset.js`, and `mui-theme.ts`. Components style themselves only through these variables and expose state via `data-*` attributes (`data-side`, `data-delta`, `data-health`, `data-flash`), so any styling system can target them.
+- **React / app consumption:** `@perpkit/react` ships the compiled contract at `packages/react/theme/` — `tokens.css` (the `--pt-*` variable declarations components reference), `tailwind.preset.js`, and `mui-theme.ts`. Components style themselves only through these variables and expose state via `data-*` attributes (`data-side`, `data-delta`, `data-health`, `data-flash`), so any styling system can target them.

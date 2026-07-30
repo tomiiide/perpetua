@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import type { Market, Prices, Side, Tif } from "@perpetua/core";
+import type { Market, Prices, Side, Tif } from "@perpkit/core";
 import {
   dec,
   decDiv,
@@ -12,7 +12,7 @@ import {
   liqPrice,
   marginRequired,
   ZERO,
-} from "@perpetua/core";
+} from "@perpkit/core";
 import {
   Num,
   NumericInput,
@@ -21,7 +21,7 @@ import {
   SideToggle,
   SteppedSlider,
   Switch,
-} from "@perpetua/react/components";
+} from "@perpkit/react/components";
 
 export interface OrderEntryPanelProps {
   market: Market;

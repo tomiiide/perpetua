@@ -1,4 +1,4 @@
-import type { Candle, EventSink, MarketId, Range, Resolution, Unsubscribe } from "@perpetua/core";
+import type { Candle, EventSink, MarketId, Range, Resolution, Unsubscribe } from "@perpkit/core";
 import { mapKlineRow, mapWsKline, streamName, symbolFromMarketId } from "./mapping.js";
 import type { RestClient } from "./rest-client.js";
 import type { BnKlineRow, BnWsKline } from "./types.js";

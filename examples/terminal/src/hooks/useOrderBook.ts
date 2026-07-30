@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import type { BookState, MarketId } from "@perpetua/core";
-import { watchOrderBook } from "@perpetua/core";
+import type { BookState, MarketId } from "@perpkit/core";
+import { watchOrderBook } from "@perpkit/core";
 import { client } from "../lib/perpetua";
 
 export function useOrderBook(marketId: MarketId | null, grouping?: string, depth = 13): BookState | null {
