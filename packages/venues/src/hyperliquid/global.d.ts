@@ -1,6 +1,6 @@
 /**
- * Minimal ambient shapes for the two runtime globals this venue uses
- * (`fetch`, `WebSocket` — both present in Node 18+). The workspace's
+ * Minimal ambient shapes for the runtime globals this venue uses
+ * (`fetch`, `WebSocket`, timers — all present in Node 18+). The workspace's
  * tsconfig has no `dom` lib and this package has no `@types/node`
  * dependency, so these are declared locally rather than pulling in a
  * broader type surface.
@@ -21,6 +21,13 @@ interface FetchResponse {
   json(): Promise<unknown>;
   text(): Promise<string>;
 }
+
+declare function setTimeout(handler: () => void, timeout?: number): TimerHandle;
+declare function clearTimeout(handle: TimerHandle): void;
+declare function setInterval(handler: () => void, timeout?: number): TimerHandle;
+declare function clearInterval(handle: TimerHandle): void;
+
+interface TimerHandle {}
 
 declare class WebSocket {
   constructor(url: string);
